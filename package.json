@@ -29,5 +29,8 @@
     "npm-run-all": "^4.0.1",
     "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "functional-red-black-tree": "^1.0.1"
   }
 }

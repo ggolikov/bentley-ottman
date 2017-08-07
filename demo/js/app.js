@@ -16,14 +16,26 @@ var bounds = map.getBounds(),
     height = n - s,
     width = e - w,
     qHeight = height / 4,
-    qWidth = width / 4;
+    qWidth = width / 4,
+    lines = [];
 
-var points = turf.random('points', 100, {
+var points = turf.random('points', 36, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
-var markers = L.geoJson(points, {
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, {radius: 5, fillColor: "#FFFF00"});
-    }
-}).addTo(map);
+var coords = points.features.map(function(feature) {
+    return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+})
+
+console.log(coords);
+
+for (var i = 0; i < coords.length; i+=2) {
+    var begin = L.circleMarker(L.latLng(coords[i]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+    var end = L.circleMarker(L.latLng(coords[i+1]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+    var line = L.polyline([coords[i], coords[i+1]], {weight: 1}).addTo(map);
+    // lines.push([coords[i], coords[i+1]]);
+}
+
+var polylines = L.geoJson(lines).addTo(map);
+console.log(lines);
+console.log(polylines);
