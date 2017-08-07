@@ -1,3 +1,3 @@
-require('./src/sweepline.js');
+var SweepLine = require('./src/sweepline.js');
 
-// module.exports = geometry;
+module.exports = SweepLine;

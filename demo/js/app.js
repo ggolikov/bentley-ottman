@@ -1,4 +1,4 @@
-require('../../index.js');
+var SweepLine = require('../../index.js');
 
 var osm = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
         maxZoom: 22,
@@ -27,15 +27,12 @@ var coords = points.features.map(function(feature) {
     return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
 })
 
-console.log(coords);
 
 for (var i = 0; i < coords.length; i+=2) {
-    var begin = L.circleMarker(L.latLng(coords[i]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
-    var end = L.circleMarker(L.latLng(coords[i+1]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
-    var line = L.polyline([coords[i], coords[i+1]], {weight: 1}).addTo(map);
-    // lines.push([coords[i], coords[i+1]]);
+    L.circleMarker(L.latLng(coords[i]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+    L.circleMarker(L.latLng(coords[i+1]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+    L.polyline([coords[i], coords[i+1]], {weight: 1}).addTo(map);
 }
 
-var polylines = L.geoJson(lines).addTo(map);
-console.log(lines);
-console.log(polylines);
+var s = new SweepLine();
+console.log(s);
