@@ -6,42 +6,65 @@
  */
 
 var Tree = require('avl');
-
-/*
- * the events queue contains points according to their coordinates
- *
- */
-var queue = new Tree(function (a, b) {
-    return a.y > b.y || (a.y === b.y && a.x < b.x);
-});
-
-var status = new Tree();
-console.log(queue);
-console.log(status);
-
+var handleEventPoint = require('./handleeventpoint');
+var utils = require('./utils');
 
 /**
- * @param {Object} status set of segments intersecting sweepline
+ * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
  */
 
-function SweepLine(status, queue) {
-    this.status = status;
-    this.queue = queue;
-}
+function findIntersections(segments, map) {
 
-SweepLine.prototype = {
+    // initialize empty queue for storing event points
+    var queue = new Tree(utils.comparePoints);
 
-    /**
-     * the status updates at some @event points
-     */
-    update: function (status) {
-        this.status = status;
-        this.test();
-    },
+    // initialize empty tree for storing segments
+    var status = new Tree();
 
-    test: function (event) {
+    var result = [];
 
+    // store event points corresponding to their coordinates
+    segments.forEach(function (segment) {
+        segment.sort(utils.comparePoints);
+        var begin = segment[0],
+            end = segment[1],
+            beginData = {
+                point: begin,
+                segment: segment
+            },
+            endData = {
+                point: end
+            };
+        queue.insert(begin, beginData);
+        queue.insert(end, endData);
+
+        status.insert(segment, segment);
+    });
+
+
+
+    // console.log(status.values());
+    // console.log(queue.values());
+    // console.log(queue);
+
+    while (!queue.isEmpty()) {
+        var point = queue.pop();
+        var res = handleEventPoint(point, queue, status);
+
+        if (res.length) {
+            result = result.concat(res);
+        }
     }
+
+    var values = queue.values();
+
+    values.forEach(function (value, index, array) {
+        var p = value.point;
+        var ll = L.latLng([p[1], p[0]]);
+        var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'FF00' + 2 ** index}).addTo(map);
+        mrk.bindPopup('' + index);
+    });
+
 }
 
-module.exports = SweepLine;
+module.exports = findIntersections;

@@ -1,4 +1,4 @@
-var SweepLine = require('../../index.js');
+var findIntersections = require('../../index.js');
 
 var osm = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
         maxZoom: 22,
@@ -19,20 +19,25 @@ var bounds = map.getBounds(),
     qWidth = width / 4,
     lines = [];
 
-var points = turf.random('points', 36, {
+var points = turf.random('points', 1000, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
 var coords = points.features.map(function(feature) {
-    return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+    return feature.geometry.coordinates;
 })
 
-
 for (var i = 0; i < coords.length; i+=2) {
-    L.circleMarker(L.latLng(coords[i]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
-    L.circleMarker(L.latLng(coords[i+1]), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
-    L.polyline([coords[i], coords[i+1]], {weight: 1}).addTo(map);
+    lines.push([coords[i], coords[i+1]]);
+
+    var begin = [coords[i][1], coords[i][0]],
+        end = [coords[i+1][1], coords[i+1][0]];
+
+    L.circleMarker(L.latLng(begin), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+    L.circleMarker(L.latLng(end), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+    L.polyline([begin, end], {weight: 1}).addTo(map);
 }
 
-var s = new SweepLine();
-console.log(s);
+findIntersections(lines, map);
+
+window.map = map;
