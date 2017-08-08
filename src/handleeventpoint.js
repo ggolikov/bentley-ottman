@@ -10,8 +10,7 @@ function handleEventPoint(point, queue, status) {
 
     var result = [];
 
-    // filter by upperpoint
-    // 2
+    // 1. Initialize event queue EQ = all segment endpoints
     status.forEach(function (node) {
         var segment = node.data,
             begin = segment[0],
@@ -34,7 +33,6 @@ function handleEventPoint(point, queue, status) {
         result.push(p);
     }
 
-    console.log(ups.concat(lps).concat(cps));
 
     // 5
     removeFromTree(lps, status);

@@ -5,6 +5,53 @@
  *  balanced AVL BST for storing an event queue and sweepline status
  */
 
+
+ // (1) Initialize event queue EQ = all segment endpoints;
+ // (2) Sort EQ by increasing x and y;
+ // (3) Initialize sweep line SL to be empty;
+ // (4) Initialize output intersection list IL to be empty;
+ //
+ // (5) While (EQ is nonempty) {
+ //     (6) Let E = the next event from EQ;
+ //     (7) If (E is a left endpoint) {
+ //             Let segE = E's segment;
+ //             Add segE to SL;
+ //             Let segA = the segment Above segE in SL;
+ //             Let segB = the segment Below segE in SL;
+ //             If (I = Intersect( segE with segA) exists)
+ //                 Insert I into EQ;
+ //             If (I = Intersect( segE with segB) exists)
+ //                 Insert I into EQ;
+ //         }
+ //         Else If (E is a right endpoint) {
+ //             Let segE = E's segment;
+ //             Let segA = the segment Above segE in SL;
+ //             Let segB = the segment Below segE in SL;
+ //             Delete segE from SL;
+ //             If (I = Intersect( segA with segB) exists)
+ //                 If (I is not in EQ already)
+ //                     Insert I into EQ;
+ //         }
+ //         Else {  // E is an intersection event
+ //             Add E’s intersect point to the output list IL;
+ //             Let segE1 above segE2 be E's intersecting segments in SL;
+ //             Swap their positions so that segE2 is now above segE1;
+ //             Let segA = the segment above segE2 in SL;
+ //             Let segB = the segment below segE1 in SL;
+ //             If (I = Intersect(segE2 with segA) exists)
+ //                 If (I is not in EQ already)
+ //                     Insert I into EQ;
+ //             If (I = Intersect(segE1 with segB) exists)
+ //                 If (I is not in EQ already)
+ //                     Insert I into EQ;
+ //         }
+ //         remove E from EQ;
+ //     }
+ //     return IL;
+ // }
+
+
+
 var Tree = require('avl');
 var handleEventPoint = require('./handleeventpoint');
 var utils = require('./utils');
@@ -15,55 +62,85 @@ var utils = require('./utils');
 
 function findIntersections(segments, map) {
 
-    // initialize empty queue for storing event points
+    // (1) Initialize event queue EQ = all segment endpoints;
+    // (2) Sort EQ by increasing x and y;
     var queue = new Tree(utils.comparePoints);
 
-    // initialize empty tree for storing segments
-    var status = new Tree();
+    // (3) Initialize sweep line SL to be empty;
+    var status = new Tree(utils.compareSegments);
 
+    // (4) Initialize output intersection list IL to be empty;
     var result = [];
 
     // store event points corresponding to their coordinates
     segments.forEach(function (segment) {
+        // 2. Sort EQ by increasing x and y;
         segment.sort(utils.comparePoints);
         var begin = segment[0],
             end = segment[1],
             beginData = {
                 point: begin,
+                type: 'begin',
                 segment: segment
             },
             endData = {
-                point: end
+                point: end,
+                type: 'end',
             };
         queue.insert(begin, beginData);
         queue.insert(end, endData);
 
-        status.insert(segment, segment);
+        // status.insert(segment, segment);
     });
 
 
 
     // console.log(status.values());
-    // console.log(queue.values());
+    console.log(queue.values());
     // console.log(queue);
-
-    while (!queue.isEmpty()) {
-        var point = queue.pop();
-        var res = handleEventPoint(point, queue, status);
-
-        if (res.length) {
-            result = result.concat(res);
-        }
-    }
-
     var values = queue.values();
 
     values.forEach(function (value, index, array) {
         var p = value.point;
         var ll = L.latLng([p[1], p[0]]);
         var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'FF00' + 2 ** index}).addTo(map);
-        mrk.bindPopup('' + index);
+        mrk.bindPopup('' + index + '\n' + p[0] + '\n' + p[1]);
     });
+
+    // (5) While (EQ is nonempty) {
+    while (!queue.isEmpty()) {
+         //     (6) Let E = the next event from EQ;
+        var event = queue.pop();
+
+        //     (7) If (E is a left endpoint) {
+        if (event.data.type === 'begin') {
+            //             Let segE = E's segment;
+            var segE = event.data.segment;
+            //             Add segE to SL;
+            status.insert(segE, segE);
+            //             Let segA = the segment Above segE in SL;
+            var segA = status.prev(segE);
+            //             Let segB = the segment Below segE in SL;
+            var segB = status.next(segE);
+            console.log(status.values());
+
+            console.log(segA);
+            console.log(segB);
+
+        }
+        //             If (I = Intersect( segE with segA) exists)
+        //                 Insert I into EQ;
+        //             If (I = Intersect( segE with segB) exists)
+        //                 Insert I into EQ;
+        //         }
+        // if ()
+        var res = handleEventPoint(event, queue, status);
+
+        if (res.length) {
+            result = result.concat(res);
+        }
+    }
+
 
 }
 

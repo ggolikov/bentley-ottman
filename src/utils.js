@@ -1,11 +1,37 @@
 var utils = {
     // points comparator
     comparePoints: function(a, b) {
-        if (a[1] > b[1] || (a[1] === b[1] && a[0] < b[0])) {
+        var x1 = a[0],
+            y1 = a[1],
+            x2 = b[0],
+            y2 = b[1];
+        // if (a[1] > b[1] || (a[1] === b[1] && a[0] < b[0])) {
+        //     return 1;
+        // } else if (a[1] < b[1] || (a[1] === b[1] && a[0] > b[0])) {
+        //     return -1;
+        // } else if (a[0] === b[0] && a[1] === b[1]) {
+        //     return 0;
+        // }
+        if (x1 > x2 || (x1 === x2 && y1 > y2)) {
             return 1;
-        } else if (a[1] < b[1] || (a[1] === b[1] && a[0] > b[0])) {
+        } else if (x1 < x2 || (x1 === x2 && y1 < y2)) {
             return -1;
-        } else if (a[0] === b[0] && a[1] === b[1]) {
+        } else if (x1 === x2 && y1 === y2) {
+            return 0;
+        }
+    },
+
+    compareSegments: function (a, b) {
+        var x1 = a[0][0],
+            y1 = a[0][1],
+            x2 = b[0][0],
+            y2 = b[0][1];
+
+        if (y1 > y2) {
+            return 1;
+        } else if (y1 < y2) {
+            return -1;
+        } else if (y1 === y2) {
             return 0;
         }
     },
