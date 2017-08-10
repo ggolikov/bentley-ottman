@@ -67,7 +67,7 @@ function findIntersections(segments, map) {
     var queue = new Tree(utils.comparePoints);
 
     // (3) Initialize sweep line SL to be empty;
-    var status = new Tree(utils.compareSegments);
+    var status = new Tree(utils.comparePoints);
 
     // (4) Initialize output intersection list IL to be empty;
     var result = [];
@@ -86,6 +86,7 @@ function findIntersections(segments, map) {
             endData = {
                 point: end,
                 type: 'end',
+                segment: segment
             };
         queue.insert(begin, beginData);
         queue.insert(end, endData);
@@ -93,15 +94,20 @@ function findIntersections(segments, map) {
         // status.insert(segment, segment);
     });
 
-    console.log(queue.values());
+    // console.log(queue.values());
     // console.log(queue);
     var values = queue.values();
-    // var v = values[0];
+    var v = values[0];
     // vv = [v.point[0], v.point[1]];
     // console.log(v.point);
-    // console.log(vv);
-    // console.log(v);
+    // // console.log(vv);
+    // // console.log(v);
+    // console.log(queue.next(v.point));
     // console.log(queue.find(v.point));
+    // queue.forEach(function (n) {
+    //     console.log(n.left, n.right);
+    // });
+        // console.log(queue.toString());
 
     values.forEach(function (value, index, array) {
         var p = value.point;
@@ -125,9 +131,19 @@ function findIntersections(segments, map) {
             var segA = status.prev(segE);
             //             Let segB = the segment Below segE in SL;
             var segB = status.next(segE);
-            console.log(status.values());
+
+            // console.log(status.toString());
+
+            // console.log(status.values());
             var ss = status.find(segE);
-            console.log(ss);
+
+            // console.log(tree);
+            // console.log(ss);
+            status.forEach(function (n) {
+                console.log(n);
+            });
+
+            console.log('----');
 
             // console.log(segA);
             // console.log(segB);
@@ -142,9 +158,15 @@ function findIntersections(segments, map) {
 
     var sValues = status.values();
     var f = sValues[0];
-    console.log(status.next(f));
+    // console.log(status.next(f));
 
-    // var sValues = status.values()
+    // status.forEach(function (n) {
+        // console.log(n);
+    // });
+
+    console.log(status);
+
+    console.log(status.toString());
 
     sValues.forEach(function (value, index, array) {
         lls = value.map(function(p){return L.latLng(p.slice().reverse())});
