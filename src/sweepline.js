@@ -93,12 +93,15 @@ function findIntersections(segments, map) {
         // status.insert(segment, segment);
     });
 
-
-
-    // console.log(status.values());
     console.log(queue.values());
     // console.log(queue);
     var values = queue.values();
+    // var v = values[0];
+    // vv = [v.point[0], v.point[1]];
+    // console.log(v.point);
+    // console.log(vv);
+    // console.log(v);
+    // console.log(queue.find(v.point));
 
     values.forEach(function (value, index, array) {
         var p = value.point;
@@ -123,9 +126,11 @@ function findIntersections(segments, map) {
             //             Let segB = the segment Below segE in SL;
             var segB = status.next(segE);
             console.log(status.values());
+            var ss = status.find(segE);
+            console.log(ss);
 
-            console.log(segA);
-            console.log(segB);
+            // console.log(segA);
+            // console.log(segB);
 
         }
         //             If (I = Intersect( segE with segA) exists)
@@ -133,13 +138,24 @@ function findIntersections(segments, map) {
         //             If (I = Intersect( segE with segB) exists)
         //                 Insert I into EQ;
         //         }
-        // if ()
-        var res = handleEventPoint(event, queue, status);
-
-        if (res.length) {
-            result = result.concat(res);
-        }
     }
+
+    var sValues = status.values();
+    var f = sValues[0];
+    console.log(status.next(f));
+
+    // var sValues = status.values()
+
+    sValues.forEach(function (value, index, array) {
+        lls = value.map(function(p){return L.latLng(p.slice().reverse())});
+
+        var line = L.polyline(lls).addTo(map);
+        line.bindPopup('' + index);
+    });
+    // console.log(status.values());
+
+
+
 
 
 }

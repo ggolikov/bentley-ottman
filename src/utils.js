@@ -5,13 +5,7 @@ var utils = {
             y1 = a[1],
             x2 = b[0],
             y2 = b[1];
-        // if (a[1] > b[1] || (a[1] === b[1] && a[0] < b[0])) {
-        //     return 1;
-        // } else if (a[1] < b[1] || (a[1] === b[1] && a[0] > b[0])) {
-        //     return -1;
-        // } else if (a[0] === b[0] && a[1] === b[1]) {
-        //     return 0;
-        // }
+
         if (x1 > x2 || (x1 === x2 && y1 > y2)) {
             return 1;
         } else if (x1 < x2 || (x1 === x2 && y1 < y2)) {
@@ -21,19 +15,37 @@ var utils = {
         }
     },
 
+
+
     compareSegments: function (a, b) {
         var x1 = a[0][0],
             y1 = a[0][1],
-            x2 = b[0][0],
-            y2 = b[0][1];
+            x2 = a[1][0],
+            y2 = a[1][1],
+            x3 = b[0][0],
+            y3 = b[0][1],
+            x4 = b[1][0],
+            y4 = b[1][1];
 
-        if (y1 > y2) {
+        var v1 = [x2 - x1, y2 - y1],
+            v2 = [x4 - x3, y4 - y3];
+
+        var mult = v1[0] * v2[1] - v1[1] * v2[0];
+
+        if (y1 > y3) {
             return 1;
-        } else if (y1 < y2) {
+        } else if (y1 < y3) {
             return -1;
-        } else if (y1 === y2) {
+        } else if (y1 === y3) {
             return 0;
         }
+        // if (mult > 0) {
+        //     return 1;
+        // } else if (mult < 0) {
+        //     return -1;
+        // } else if (mult === 0) {
+        //     return 0;
+        // }
     },
 
     pointOnLine: function (line, point) {
