@@ -67,7 +67,7 @@ function findIntersections(segments, map) {
     var queue = new Tree(utils.comparePoints);
 
     // (3) Initialize sweep line SL to be empty;
-    var status = new Tree(utils.comparePoints);
+    var status = new Tree(utils.compareSegments);
 
     // (4) Initialize output intersection list IL to be empty;
     var result = [];
@@ -123,6 +123,8 @@ function findIntersections(segments, map) {
 
         //     (7) If (E is a left endpoint) {
         if (event.data.type === 'begin') {
+
+            status.x = event.data.point[0];
             //             Let segE = E's segment;
             var segE = event.data.segment;
             //             Add segE to SL;
@@ -136,17 +138,19 @@ function findIntersections(segments, map) {
 
             // console.log(status.values());
             var ss = status.find(segE);
-
-            // console.log(tree);
             // console.log(ss);
+            // console.log(ss);
+
+            console.log(segE);
+            // console.log(tree);
             status.forEach(function (n) {
-                console.log(n);
+                // console.log(n);
             });
 
-            console.log('----');
 
-            // console.log(segA);
-            // console.log(segB);
+            console.log(segA);
+            console.log(segB);
+            console.log('----');
 
         }
         //             If (I = Intersect( segE with segA) exists)
