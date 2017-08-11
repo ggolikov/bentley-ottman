@@ -124,15 +124,23 @@ function findIntersections(segments, map) {
         //     (7) If (E is a left endpoint) {
         if (event.data.type === 'begin') {
 
-            status.x = event.data.point[0];
+            // когда мы помещаем отрезок в множество статуса, мы сравниваем его в данной точке
+            // с уже существующими.
+            // это множество динамическое,
+            // то есть отрезки меняют свое положение.
+
+            // если в некоторой точке x у этого отрезка больше y, то он помещается после первого
+
+
+            // status.x = event.data.point[0];
             //             Let segE = E's segment;
             var segE = event.data.segment;
             //             Add segE to SL;
             status.insert(segE, segE);
             //             Let segA = the segment Above segE in SL;
-            var segA = status.prev(segE);
+            // var segA = status.prev(segE);
             //             Let segB = the segment Below segE in SL;
-            var segB = status.next(segE);
+            // var segB = status.next(segE);
 
             // console.log(status.toString());
 
@@ -141,16 +149,17 @@ function findIntersections(segments, map) {
             // console.log(ss);
             // console.log(ss);
 
-            console.log(segE);
+            // console.log(segE);
             // console.log(tree);
             status.forEach(function (n) {
+                console.log(utils.findEquation(n.data));
                 // console.log(n);
             });
-
-
-            console.log(segA);
-            console.log(segB);
-            console.log('----');
+            //
+            //
+            // console.log(segA);
+            // console.log(segB);
+            // console.log('----');
 
         }
         //             If (I = Intersect( segE with segA) exists)
@@ -168,9 +177,9 @@ function findIntersections(segments, map) {
         // console.log(n);
     // });
 
-    console.log(status);
+    // console.log(status);
 
-    console.log(status.toString());
+    // console.log(status.toString());
 
     sValues.forEach(function (value, index, array) {
         lls = value.map(function(p){return L.latLng(p.slice().reverse())});

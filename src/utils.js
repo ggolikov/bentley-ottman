@@ -18,10 +18,6 @@ var utils = {
 
 
     compareSegments: function (a, b) {
-        console.log(this.x);
-
-        return a[0][0] > this.x;
-
         // нужно вернуть сегмент, который в данной точке
         // является первым ближайшим по x или y
 
@@ -55,6 +51,18 @@ var utils = {
         // } else if (mult === 0) {
         //     return 0;
         // }
+    },
+
+    findEquation: function (segment) {
+        var x1 = segment[0][0],
+            y1 = segment[0][1],
+            x2 = segment[1][0],
+            y2 = segment[1][1],
+            a = y1 - y2,
+            b = x2 - x1,
+            c = x1 * y2 - x2 * y1;
+
+        console.log(a + 'x + ' + b + 'y + ' + c + ' = 0');
     },
 
     pointOnLine: function (line, point) {
