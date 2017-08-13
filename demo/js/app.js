@@ -1,4 +1,4 @@
-var findIntersections = require('../../index.js');
+ var findIntersections = require('../../index.js');
 
 var osm = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
         maxZoom: 22,
@@ -19,7 +19,7 @@ var bounds = map.getBounds(),
     qWidth = width / 4,
     lines = [];
 
-var points = turf.random('points', 6, {
+var points = turf.random('points', 16, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
