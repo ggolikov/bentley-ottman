@@ -1,9 +1,4 @@
-// почему-то первыми иногда приходят события end
-// некоторые точки не видны?
-
-
-
-var Tree = require('avl');
+var createTree = require('functional-red-black-tree');
 var handleEventPoint = require('./handleeventpoint');
 var utils = require('./utils');
 
@@ -12,8 +7,8 @@ var utils = require('./utils');
  */
 
 function findIntersections(segments, map) {
-    var queue = new Tree(utils.comparePoints),
-        status = new Tree(utils.compareSegments),
+    var queue = createTree(utils.comparePoints),
+        status = createTree(utils.compareSegments),
         result = [];
 
     segments.forEach(function (segment) {
@@ -37,7 +32,7 @@ function findIntersections(segments, map) {
     /*
      * LOG
      */
-    var values = queue.values();
+    var values = queue.values;
 
     values.forEach(function (value, index, array) {
         var p = value.point;
@@ -50,12 +45,8 @@ function findIntersections(segments, map) {
     /*
      * LOG END
      */
-    while (!queue.isEmpty()) {
+    while (queue.length) {
         var event = queue.pop();
-
-        console.log(event.data.point.toString());
-        console.log(event.data.type);
-        console.log(status.toString());
 
         if (event.data.type === 'begin') {
 
@@ -65,16 +56,17 @@ function findIntersections(segments, map) {
             /*
              * LOG
              */
-            var lls = segE.key.map(function(p){return L.latLng(p.slice().reverse())});
-            var line = L.polyline(lls, {color: 'green'}).addTo(map);
+            var adding = segE.key;
+            var lls = adding.map(function(p){return L.latLng(p.slice().reverse())});
+            var line = L.polyline(lls).addTo(map);
 
-            line.bindPopup('added' + i);
+            line.bindPopup('' + i);
 
             i++;
 
-            // console.log('now adding segment: ');
-            segE.key.forEach(function (p) {
-                // console.log('x: ' + p[0] + ' y: ' + p[1]);
+            console.log('now adding segment: ');
+            adding.forEach(function (p) {
+                console.log('x: ' + p[0] + ' y: ' + p[1]);
             })
             /*
              * LOG END
@@ -82,8 +74,8 @@ function findIntersections(segments, map) {
 
             var segA = status.prev(segE);
             var segB = status.next(segE);
-            // console.log(segA);
-            // console.log(segB);
+            console.log(segA);
+            console.log(segB);
 
             if (segA) {
                 var eaIntersectionPoint = utils.findSegmentsIntersection(segE.key, segA.key);
@@ -115,14 +107,6 @@ function findIntersections(segments, map) {
             var segE = status.find(event.data.segment);
             var segA = status.prev(segE);
             var segB = status.next(segE);
-
-            /*
-             * LOG
-             */
-             var lls = segE.key.map(function(p){return L.latLng(p.slice().reverse())});
-             var line = L.polyline(lls, {color: 'red'}).addTo(map);
-
-             line.bindPopup('removed' + i);
 
             if (segA && segB) {
                 var abIntersectionPoint = utils.findSegmentsIntersection(segA.key, segB.key);
@@ -163,13 +147,13 @@ function findIntersections(segments, map) {
                 seg2 = status.find(event.data.segments[1]);
 
             //             Swap their positions so that segE2 is now above segE1;
-            // console.log(status);
+            console.log(status);
             // status.prev(seg1) = status.find(seg2);
             // status.next(seg2) = status.find(seg1);
             //             Let segA = the segment above segE2 in SL;
-            var segA = status.next(seg1);
+            var segA = status.prev(seg2);
             //             Let segB = the segment below segE1 in SL;
-            var segB = status.prev(seg2);
+            var segB = status.next(seg1);
 
             if (segA) {
                 var a2IntersectionPoint = utils.findSegmentsIntersection(seg2.key, segA.key);
@@ -202,14 +186,14 @@ function findIntersections(segments, map) {
         }
     }
 
-    status.values().forEach(function (value, index, array) {
+    status.values.forEach(function (value, index, array) {
 
         lls = value.map(function(p){return L.latLng(p.slice().reverse())});
 
         var line = L.polyline(lls).addTo(map);
         line.bindPopup('' + index);
     });
-    // console.log(result);
+    console.log(result);
     return result;
 }
 
