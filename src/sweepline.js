@@ -37,14 +37,13 @@ function findIntersections(segments, map) {
     /*
      * LOG
      */
-    var values = queue.values();
+    // var values = queue.values();
 
-    values.forEach(function (value, index, array) {
-        var p = value.point;
-        var ll = L.latLng([p[1], p[0]]);
-        var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'FF00' + 2 ** index}).addTo(map);
-        mrk.bindPopup('' + index + '\n' + p[0] + '\n' + p[1]);
-    });
+    // values.forEach(function (value, index, array) {
+    //     var ll = L.latLng([p[1], p[0]]);
+    //     var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'FF00' + 2 ** index}).addTo(map);
+    //     mrk.bindPopup('' + index + '\n' + p[0] + '\n' + p[1]);
+    // });
 
     var i = 0;
     /*
@@ -52,12 +51,16 @@ function findIntersections(segments, map) {
      */
     while (!queue.isEmpty()) {
         var event = queue.pop();
+        var p = event.data.point;
 
         console.log(event.data.point.toString());
         console.log(event.data.type);
         console.log(status.toString());
 
         if (event.data.type === 'begin') {
+
+            var ll = L.latLng([p[1], p[0]]);
+            var mrk = L.circleMarker(ll, {radius: 4, color: 'green', fillColor: 'green'}).addTo(map);
 
             status.insert(event.data.segment);
             var segE = status.find(event.data.segment);
@@ -70,7 +73,7 @@ function findIntersections(segments, map) {
 
             line.bindPopup('added' + i);
 
-            i++;
+
 
             // console.log('now adding segment: ');
             segE.key.forEach(function (p) {
@@ -112,6 +115,8 @@ function findIntersections(segments, map) {
             }
             //         Else If (E is a right endpoint) {
         } else if (event.data.type === 'end') {
+            var ll = L.latLng([p[1], p[0]]);
+            var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'red'}).addTo(map);
             var segE = status.find(event.data.segment);
             var segA = status.prev(segE);
             var segB = status.next(segE);
@@ -157,6 +162,8 @@ function findIntersections(segments, map) {
              */
             status.remove(segE.key);
         } else {
+            var ll = L.latLng([p[1], p[0]]);
+            var mrk = L.circleMarker(ll, {radius: 4, color: 'blue', fillColor: 'blue'}).addTo(map);
             result.push(event.data.point);
             //             Let segE1 above segE2 be E's intersecting segments in SL;
             var seg1 = status.find(event.data.segments[0]),
@@ -200,6 +207,7 @@ function findIntersections(segments, map) {
                 }
             }
         }
+        i++;
     }
 
     status.values().forEach(function (value, index, array) {
