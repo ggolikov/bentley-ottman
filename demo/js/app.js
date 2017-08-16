@@ -1,4 +1,5 @@
- var findIntersections = require('../../index.js');
+var findIntersections = require('../../index');
+var data = require('../../src/data');
 
 var osm = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
         maxZoom: 22,
@@ -7,6 +8,8 @@ var osm = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{
     point = L.latLng([55.753210, 37.621766]),
     map = new L.Map('map', {layers: [osm], center: point, zoom: 12, maxZoom: 22}),
     root = document.getElementById('content');
+
+window.map = map;
 
 var bounds = map.getBounds(),
     n = bounds._northEast.lat,
@@ -29,18 +32,24 @@ var coords = points.features.map(function(feature) {
 
 for (var i = 0; i < coords.length; i+=2) {
     lines.push([coords[i], coords[i+1]]);
-
-    var begin = [coords[i][1], coords[i][0]],
-        end = [coords[i+1][1], coords[i+1][0]];
-
-    L.circleMarker(L.latLng(begin), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
-    L.circleMarker(L.latLng(end), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
-    L.polyline([begin, end], {weight: 1}).addTo(map);
 }
 
-var ps = findIntersections(lines, map);
+// drawLines(lines);
+drawLines(data);
+
+var ps = findIntersections(data, map);
 
 ps.forEach(function (p) {
     L.circleMarker(L.latLng(p.slice().reverse()), {radius: 5, color: 'blue', fillColor: 'blue'}).addTo(map);
 })
-window.map = map;
+
+function drawLines(array) {
+    array.forEach(function (line) {
+        var begin = line[0],
+            end = line[1];
+
+        L.circleMarker(L.latLng(begin), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+        L.circleMarker(L.latLng(end), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
+        L.polyline([begin, end], {weight: 1}).addTo(map);
+    });
+}

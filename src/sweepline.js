@@ -3,9 +3,8 @@
 
 
 
-var Tree = require('avl');
-var handleEventPoint = require('./handleeventpoint');
-var utils = require('./utils');
+var Tree = require('avl'),
+    utils = require('./utils');
 
 /**
  * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
@@ -53,9 +52,10 @@ function findIntersections(segments, map) {
         var event = queue.pop();
         var p = event.data.point;
 
-        console.log(event.data.point.toString());
-        console.log(event.data.type);
-        console.log(status.toString());
+        console.log(i + ') current point: ' + event.data.point.toString());
+        console.log('   point type: ' + event.data.type);
+        console.log('   queue: ' + queue.toString());
+        console.log('   status: ' + status.toString());
 
         if (event.data.type === 'begin') {
 
@@ -98,6 +98,7 @@ function findIntersections(segments, map) {
                         segments: [segE.key, segA.key]
                     }
                     queue.insert(eaIntersectionPoint, eaIntersectionPointData);
+                    console.log('inserted point:' + eaIntersectionPoint.toString());
                 }
             }
 
@@ -111,6 +112,7 @@ function findIntersections(segments, map) {
                         segments: [segE.key, segB.key]
                     }
                     queue.insert(ebIntersectionPoint, ebIntersectionPointData);
+                    console.log('inserted ebIntersectionPoint:' + ebIntersectionPoint.toString());
                 }
             }
             //         Else If (E is a right endpoint) {
@@ -141,6 +143,7 @@ function findIntersections(segments, map) {
                         }
                         //                 Insert I into EQ;
                         queue.insert(abIntersectionPoint, abIntersectionPointData);
+                        console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
                     }
                 }
             }
@@ -189,6 +192,8 @@ function findIntersections(segments, map) {
                             segments: [seg2.key, segA.key]
                         }
                         queue.insert(a2IntersectionPoint, a2IntersectionPointData);
+                        console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
+
                     }
                 }
             }
@@ -203,6 +208,8 @@ function findIntersections(segments, map) {
                             segments: [seg1.key, segB.key]
                         }
                         queue.insert(b1IntersectionPoint, b1IntersectionPointData);
+                        console.log('inserted b1IntersectionPoint:' + b1IntersectionPoint.toString());
+
                     }
                 }
             }
