@@ -48,6 +48,9 @@ function findIntersections(segments, map) {
     /*
      * LOG END
      */
+
+    // debug:
+    // L.marker(L.latLng([].slice().reverse())).addTo(map);
     while (!queue.isEmpty()) {
         var event = queue.pop();
         var p = event.data.point;
@@ -192,7 +195,7 @@ function findIntersections(segments, map) {
                             segments: [seg2.key, segA.key]
                         }
                         queue.insert(a2IntersectionPoint, a2IntersectionPointData);
-                        console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
+                        console.log('inserted a2IntersectionPoint:' + a2IntersectionPoint.toString());
 
                     }
                 }
@@ -224,8 +227,13 @@ function findIntersections(segments, map) {
         var line = L.polyline(lls).addTo(map);
         line.bindPopup('' + index);
     });
+
+    window.status = status;
+    window.queue = queue;
+
     // console.log(result);
     return result;
 }
+
 
 module.exports = findIntersections;

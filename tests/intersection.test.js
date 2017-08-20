@@ -1,7 +1,7 @@
 require('mocha');
 var assert = require('chai').assert,
     Tree = require('avl'),
-    data = require('../src/data'),
+    data = require('../demo/data'),
     utils = require('../src/utils');
 
 describe('intersection test', function() {
