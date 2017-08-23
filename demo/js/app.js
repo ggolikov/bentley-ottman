@@ -54,3 +54,5 @@ function drawLines(array) {
         L.polyline([begin, end], {weight: 1}).addTo(map);
     });
 }
+
+console.log(ps);

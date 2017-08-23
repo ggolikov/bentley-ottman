@@ -36,278 +36,138 @@ Utils.prototype = {
             x3 = a[0][0],
             y3 = a[0][1],
             x4 = a[1][0],
-            y4 = a[1][1],
-            intersectionPoint = findSegmentsIntersection(a, b);
-
-        // console.log(intersectionPoint);
-        if (!intersectionPoint) {
-            // находим векторное произведение векторов b и b[0]a[0]
-            var Dba1 = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-            // находим векторное произведение векторов b и b[0]a[1]
-            var Dba2 = (x2 - x1) * (y4 - y1) - (y2 - y1) * (x4 - x1);
-            // находим знак векторных произведений
-            var D = Dba1 * Dba2;
-
-            if (D < 0) {
-                return -1;
-            } else if (D > 0) {
-                return 1;
-            } else if (D === 0) {
-                return 0;
-            }
-        } else {
-            console.log('they are intersecting');
-            var intersectionX = intersectionPoint[0];
-            var intersectionY = intersectionPoint[1];
-
-            // if (y3 < intersectionY) {
-            //     return -1
-            // } else if (y3 > intersectionY) {
-            //     return 1;
-            // } else if (y3 === intersectionY) {
-            //     return 0;
-            // }
-            // if (x3 < intersectionX) {
-            //     return - 1
-            // } else if (x3 > intersectionX) {
-            //     return 1;
-            // } else if (x3 === intersectionX) {
-            //     return 0;
-            // }
-            if (y3 < y1) {
-                return -1
-            } else if (y3 > y1) {
-                return 1;
-            } else if (y3 === y1) {
-                return 0;
-            }
-
-            // находим векторное произведение векторов b и b[0]a[0]
-            var D = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-            // находим векторное произведение векторов b и b[0]a[1]
-            // var Dba2 = (x2 - x1) * (y4 - y1) - (y2 - y1) * (x4 - x1);
-            // находим знак векторных произведений
-            // var D = Dba1 * Dba2;
-
-            if (D < 0) {
-                return -1;
-            } else if (D > 0) {
-                return 1;
-            } else if (D === 0) {
-                return 0;
-            }
-
-
-            return 0;
-        }
-
-
-        function between(a, b, c) {
-            var eps = 0.0000001;
-
-            return a-eps <= b && b <= c+eps;
-        }
-
-        function findSegmentsIntersection(a, b) {
-            var x1 = a[0][0],
-                y1 = a[0][1],
-                x2 = a[1][0],
-                y2 = a[1][1],
-                x3 = b[0][0],
-                y3 = b[0][1],
-                x4 = b[1][0],
-                y4 = b[1][1];
-            var x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
-                ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-            var y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
-                ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-            if (isNaN(x)||isNaN(y)) {
-                return false;
-            } else {
-                if (x1 >= x2) {
-                    if (between(x2, x, x1)) {return false;}
-                } else {
-                    if (between(x1, x, x2)) {return false;}
-                }
-                if (y1 >= y2) {
-                    if (between(y2, y, y1)) {return false;}
-                } else {
-                    if (between(y1, y, y2)) {return false;}
-                }
-                if (x3 >= x4) {
-                    if (between(x4, x, x3)) {return false;}
-                } else {
-                    if (between(x3, x, x4)) {return false;}
-                }
-                if (y3 >= y4) {
-                    if (between(y4, y, y3)) {return false;}
-                } else {
-                    if (between(y3, y, y4)) {return false;}
-                }
-            }
-            return [x, y];
-        }
-
-    },
-
-    compareSegments2: function (a, b) {
-        var x1 = b[0][0],
-            y1 = b[0][1],
-            x2 = b[1][0],
-            y2 = b[1][1],
-            x3 = a[0][0],
-            y3 = a[0][1],
-            x4 = a[1][0],
             y4 = a[1][1];
 
-            // test if the triple of endpoints left(Y), right(Y), left(X) is in
-            // counterclockwise order.
-
-        var nx1 = x3,
-            ny1 = findY(b[0], b[1], x3);
-
-            console.log([nx1, ny1]);
-
-        var D = (y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1);
-        // var D = (x1 - x2) * (y3 - y2) - (y1 - y2) * (x3 - x2);
-        var D = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-
-        // находим векторное произведение векторов b и b[0]a[0]
-        var Dba1 = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-        // находим векторное произведение векторов b и b[0]a[1]
-        var Dba2 = (x2 - x1) * (y4 - y1) - (y2 - y1) * (x4 - x1);
-        // находим знак векторных произведений
-        // var D = Dba1 * Dba2;
-
-        // console.log('Dba1: ' + Dba1);
-        // console.log('Dba2: ' + Dba2);
-        // console.log('D: ' + D);
-
-        if (D < 0) {
+        if (y3 > y1) {
             return -1;
-        } else if (D > 0) {
+        } else if (y3 < y1) {
             return 1;
-        } else if (D === 0) {
+        } else {
             return 0;
         }
-
-        function findY (point1, point2, x) {
-            var x1 = point1[0],
-                y1 = point1[1],
-                x2 = point2[0],
-                y2 = point2[1],
-                a = y1 - y2,
-                b = x2 - x1,
-                c = x1 * y2 - x2 * y1;
-
-            return (-c - a * x) / b;
-        }
     },
 
-    compareSegments1: function (a, b) {
-        // нужно вернуть сегмент, который в данной точке
-        // является первым ближайшим по x или y
-        // сортировка по y в точке с данной координатой x
-        // найти, с какой стороны лежит левая точка b по отношению к a
-
-        var x1 = a[0][0],
-            y1 = a[0][1],
-            x2 = a[1][0],
-            y2 = a[1][1],
-            x3 = b[0][0],
-            y3 = b[0][1],
-            x4 = b[1][0],
-            y4 = b[1][1];
-        //
-        var nx1 = x3,
-            ny1 = findY(a[0], a[1], x3);
-
-        // Векторное произведение в координатах
-        // var D = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-        // var D = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
-        // var intersectionPoint = findSegmentsIntersection(a, b);
-
-            // вставляет не в тот сегмент
-            var v1 = [x2 - x1, y2 - y1],
-                v2 = [x4 - x3, y4 - y3];
-            // дерево выдает ошибку
-            var v1 = [x2 - x1, y2 - y1],
-                v2 = [x3 - x1, y3 - y1];
-            // дерево выдает ошибку
-            var v1 = [x2 - nx1, y2 - ny1],
-                v2 = [x3 - nx1, y3 - ny1];
-
-            // Векторное произведение
-            var D = v1[0] * v2[1] - v1[1] * v2[0];
-
-            if (D < 0) {
-                return -1;
-            } else if (D > 0) {
-                return 1;
-            } else if (D === 0) {
-                return 0;
-            }
-
-        function between (a, b, c) {
-            var eps = 0.0000001;
-
-            return a-eps <= b && b <= c+eps;
-        }
-
-        function findSegmentsIntersection (a, b) {
-            var x1 = a[0][0],
-                y1 = a[0][1],
-                x2 = a[1][0],
-                y2 = a[1][1],
-                x3 = b[0][0],
-                y3 = b[0][1],
-                x4 = b[1][0],
-                y4 = b[1][1];
-            var x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
-                ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-            var y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
-                ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-            if (isNaN(x)||isNaN(y)) {
-                return false;
-            } else {
-                if (x1 >= x2) {
-                    if (between(x2, x, x1)) {return false;}
-                } else {
-                    if (between(x1, x, x2)) {return false;}
-                }
-                if (y1 >= y2) {
-                    if (between(y2, y, y1)) {return false;}
-                } else {
-                    if (between(y1, y, y2)) {return false;}
-                }
-                if (x3 >= x4) {
-                    if (between(x4, x, x3)) {return false;}
-                } else {
-                    if (between(x3, x, x4)) {return false;}
-                }
-                if (y3 >= y4) {
-                    if (between(y4, y, y3)) {return false;}
-                } else {
-                    if (between(y3, y, y4)) {return false;}
-                }
-            }
-            return [x, y];
-        }
-
-
-        function findY (point1, point2, x) {
-            var x1 = point1[0],
-                y1 = point1[1],
-                x2 = point2[0],
-                y2 = point2[1],
-                a = y1 - y2,
-                b = x2 - x1,
-                c = x1 * y2 - x2 * y1;
-
-            return (-c - a * x) / b;
-        }
-
-    },
+    // compareSegments3: function (a, b) {
+    //     var x1 = b[0][0],
+    //         y1 = b[0][1],
+    //         x2 = b[1][0],
+    //         y2 = b[1][1],
+    //         x3 = a[0][0],
+    //         y3 = a[0][1],
+    //         x4 = a[1][0],
+    //         y4 = a[1][1],
+    //         intersectionPoint = findSegmentsIntersection(a, b);
+    //
+    //     // console.log(intersectionPoint);
+    //     if (!intersectionPoint) {
+    //         // находим векторное произведение векторов b и b[0]a[0]
+    //         var Dba1 = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+    //         // находим векторное произведение векторов b и b[0]a[1]
+    //         var Dba2 = (x2 - x1) * (y4 - y1) - (y2 - y1) * (x4 - x1);
+    //         // находим знак векторных произведений
+    //         var D = Dba1 * Dba2;
+    //
+    //         if (D < 0) {
+    //             return -1;
+    //         } else if (D > 0) {
+    //             return 1;
+    //         } else if (D === 0) {
+    //             return 0;
+    //         }
+    //     } else {
+    //         console.log('they are intersecting');
+    //         var intersectionX = intersectionPoint[0];
+    //         var intersectionY = intersectionPoint[1];
+    //
+    //         // if (y3 < intersectionY) {
+    //         //     return -1
+    //         // } else if (y3 > intersectionY) {
+    //         //     return 1;
+    //         // } else if (y3 === intersectionY) {
+    //         //     return 0;
+    //         // }
+    //         // if (x3 < intersectionX) {
+    //         //     return - 1
+    //         // } else if (x3 > intersectionX) {
+    //         //     return 1;
+    //         // } else if (x3 === intersectionX) {
+    //         //     return 0;
+    //         // }
+    //         if (y3 < y1) {
+    //             return -1
+    //         } else if (y3 > y1) {
+    //             return 1;
+    //         } else if (y3 === y1) {
+    //             return 0;
+    //         }
+    //
+    //         // находим векторное произведение векторов b и b[0]a[0]
+    //         var D = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+    //         // находим векторное произведение векторов b и b[0]a[1]
+    //         // var Dba2 = (x2 - x1) * (y4 - y1) - (y2 - y1) * (x4 - x1);
+    //         // находим знак векторных произведений
+    //         // var D = Dba1 * Dba2;
+    //
+    //         if (D < 0) {
+    //             return -1;
+    //         } else if (D > 0) {
+    //             return 1;
+    //         } else if (D === 0) {
+    //             return 0;
+    //         }
+    //
+    //
+    //         return 0;
+    //     }
+    //
+    //
+    //     function between(a, b, c) {
+    //         var eps = 0.0000001;
+    //
+    //         return a-eps <= b && b <= c+eps;
+    //     }
+    //
+    //     function findSegmentsIntersection(a, b) {
+    //         var x1 = a[0][0],
+    //             y1 = a[0][1],
+    //             x2 = a[1][0],
+    //             y2 = a[1][1],
+    //             x3 = b[0][0],
+    //             y3 = b[0][1],
+    //             x4 = b[1][0],
+    //             y4 = b[1][1];
+    //         var x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
+    //             ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+    //         var y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
+    //             ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+    //         if (isNaN(x)||isNaN(y)) {
+    //             return false;
+    //         } else {
+    //             if (x1 >= x2) {
+    //                 if (between(x2, x, x1)) {return false;}
+    //             } else {
+    //                 if (between(x1, x, x2)) {return false;}
+    //             }
+    //             if (y1 >= y2) {
+    //                 if (between(y2, y, y1)) {return false;}
+    //             } else {
+    //                 if (between(y1, y, y2)) {return false;}
+    //             }
+    //             if (x3 >= x4) {
+    //                 if (between(x4, x, x3)) {return false;}
+    //             } else {
+    //                 if (between(x3, x, x4)) {return false;}
+    //             }
+    //             if (y3 >= y4) {
+    //                 if (between(y4, y, y3)) {return false;}
+    //             } else {
+    //                 if (between(y3, y, y4)) {return false;}
+    //             }
+    //         }
+    //         return [x, y];
+    //     }
+    //
+    // },
 
     findEquation: function (segment) {
         var x1 = segment[0][0],
