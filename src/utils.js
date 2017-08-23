@@ -58,12 +58,42 @@ Utils.prototype = {
         } else {
             console.log('they are intersecting');
             var intersectionX = intersectionPoint[0];
+            var intersectionY = intersectionPoint[1];
 
-            if (x1 < intersectionX) {
-                return - 1
-            } else if (x1 > intersectionX) {
+            // if (y3 < intersectionY) {
+            //     return -1
+            // } else if (y3 > intersectionY) {
+            //     return 1;
+            // } else if (y3 === intersectionY) {
+            //     return 0;
+            // }
+            // if (x3 < intersectionX) {
+            //     return - 1
+            // } else if (x3 > intersectionX) {
+            //     return 1;
+            // } else if (x3 === intersectionX) {
+            //     return 0;
+            // }
+            if (y3 < y1) {
+                return -1
+            } else if (y3 > y1) {
                 return 1;
-            } else if (x1 === intersectionX) {
+            } else if (y3 === y1) {
+                return 0;
+            }
+
+            // находим векторное произведение векторов b и b[0]a[0]
+            var D = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+            // находим векторное произведение векторов b и b[0]a[1]
+            // var Dba2 = (x2 - x1) * (y4 - y1) - (y2 - y1) * (x4 - x1);
+            // находим знак векторных произведений
+            // var D = Dba1 * Dba2;
+
+            if (D < 0) {
+                return -1;
+            } else if (D > 0) {
+                return 1;
+            } else if (D === 0) {
                 return 0;
             }
 

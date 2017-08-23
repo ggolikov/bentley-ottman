@@ -22,12 +22,12 @@ describe('comparison test', function() {
         console.log(utils.compareSegments(data[1], data[2]));
         console.log(utils.compareSegments(data[2], data[1]));
         console.log('---intersection---');
-        // console.log(utils.findSegmentsIntersection(data[0], data[1]));
-        // console.log('---');
-        // console.log(utils.findSegmentsIntersection(data[0], data[2]));
-        // console.log('---');
-        // console.log(utils.findSegmentsIntersection(data[1], data[2]));
-        // console.log('---');
+        console.log(utils.findSegmentsIntersection(data[0], data[1]));
+        console.log('---');
+        console.log(utils.findSegmentsIntersection(data[0], data[2]));
+        console.log('---');
+        console.log(utils.findSegmentsIntersection(data[1], data[2]));
+        console.log('---');
 
         assert.strictEqual(utils.compareSegments(data[0], data[1]) === (utils.compareSegments(data[1], data[0])));
         assert.strictEqual(utils.compareSegments(data[0], data[2]) === (utils.compareSegments(data[2], data[0])));

@@ -57,7 +57,7 @@ function findIntersections(segments, map) {
 
         console.log(i + ') current point: ' + event.data.point.toString());
         console.log('   point type: ' + event.data.type);
-        console.log('   queue: ' + queue.toString());
+        // console.log('   queue: ' + queue.toString());
         console.log('   status: ' + status.toString());
 
         if (event.data.type === 'begin') {
