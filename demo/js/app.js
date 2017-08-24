@@ -22,7 +22,7 @@ var bounds = map.getBounds(),
     qWidth = width / 4,
     lines = [];
 
-var points = turf.random('points', 18, {
+var points = turf.random('points', 8, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
