@@ -29,19 +29,19 @@ Utils.prototype = {
     },
 
     compareSegments: function (a, b) {
-        var x1 = b[0][0],
-            y1 = b[0][1],
-            x2 = b[1][0],
-            y2 = b[1][1],
-            x3 = a[0][0],
-            y3 = a[0][1],
-            x4 = a[1][0],
-            y4 = a[1][1];
+        var x1 = a[0][0],
+            y1 = a[0][1],
+            x2 = a[1][0],
+            y2 = a[1][1],
+            x3 = b[0][0],
+            y3 = b[0][1],
+            x4 = b[1][0],
+            y4 = b[1][1];
 
-        if (y3 > y1) {
-            return 1;
-        } else if (y3 < y1) {
+        if (y1 < y3) {
             return -1;
+        } else if (y1 > y3) {
+            return 1;
         } else {
             return 0;
         }

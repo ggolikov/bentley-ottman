@@ -91,7 +91,7 @@ function findIntersections(segments, map) {
                     var ebIntersectionPointData = {
                         point: ebIntersectionPoint,
                         type: 'intersection',
-                        segments: [segE.key, segB.key]
+                        segments: [segB.key, segE.key]
                     }
                     queue.insert(ebIntersectionPoint, ebIntersectionPointData);
                     console.log('inserted ebIntersectionPoint:' + ebIntersectionPoint.toString());
@@ -178,7 +178,7 @@ function findIntersections(segments, map) {
                             var a2IntersectionPointData = {
                                 point: a2IntersectionPoint,
                                 type: 'intersection',
-                                segments: [seg2.key, segA.key]
+                                segments: [segA.key, seg2.key]
                             }
                             queue.insert(a2IntersectionPoint, a2IntersectionPointData);
                             console.log('inserted a2IntersectionPoint:' + a2IntersectionPoint.toString());

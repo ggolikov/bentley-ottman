@@ -6,7 +6,7 @@ var osm = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
     }),
     point = L.latLng([55.753210, 37.621766]),
-    map = new L.Map('map', {layers: [osm], center: point, zoom: 12, maxZoom: 22}),
+    map = new L.Map('map', {layers: [osm], center: point, zoom: 11, maxZoom: 22}),
     root = document.getElementById('content');
 
 window.map = map;
@@ -22,7 +22,7 @@ var bounds = map.getBounds(),
     qWidth = width / 4,
     lines = [];
 
-var points = turf.random('points', 6, {
+var points = turf.random('points', 8, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
