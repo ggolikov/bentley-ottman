@@ -39,9 +39,9 @@ Utils.prototype = {
             y4 = a[1][1];
 
         if (y3 > y1) {
-            return -1;
-        } else if (y3 < y1) {
             return 1;
+        } else if (y3 < y1) {
+            return -1;
         } else {
             return 0;
         }

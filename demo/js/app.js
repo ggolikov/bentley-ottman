@@ -22,7 +22,7 @@ var bounds = map.getBounds(),
     qWidth = width / 4,
     lines = [];
 
-var points = turf.random('points', 8, {
+var points = turf.random('points', 6, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
@@ -55,4 +55,4 @@ function drawLines(array) {
     });
 }
 
-console.log(ps);
+// console.log(ps);
