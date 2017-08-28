@@ -6,8 +6,12 @@ var Tree = require('avl'),
  */
 
 function findIntersections(segments, map) {
+    var ctx = {
+        x: null
+    };
+
     var queue = new Tree(utils.comparePoints),
-        status = new Tree(utils.compareSegments),
+        status = new Tree(utils.compareSegments.bind(ctx)),
         output = new Tree(utils.comparePoints);
 
     segments.forEach(function (segment) {
@@ -30,9 +34,13 @@ function findIntersections(segments, map) {
 
     var i = 0;
 
+
+
     while (!queue.isEmpty()) {
         var event = queue.pop();
         var p = event.data.point;
+
+        ctx.x = p[0];
 
         console.log(i + ') current point: ' + event.data.point.toString());
         console.log('   point type: ' + event.data.type);
@@ -166,14 +174,17 @@ function findIntersections(segments, map) {
             var mrk = L.circleMarker(ll, {radius: 4, color: 'blue', fillColor: 'blue'}).addTo(map);
             output.insert(event.data.point);
             //             Let segE1 above segE2 be E's intersecting segments in SL;
+            // status.remove(event.data.segments[0]);
+            // status.remove(event.data.segments[1]);
+            // status.insert(event.data.segments[0]);
+            // status.insert(event.data.segments[1]);
 
-            status.remove(event.data.segments[1]);
-            status.remove(event.data.segments[0]);
-            status.insert([event.data.point, event.data.segments[0][1]]);
-            status.insert([event.data.point, event.data.segments[1][1]]);
-
-            var seg1 = status.find([event.data.point, event.data.segments[0][1]]),
-                seg2 = status.find([event.data.point, event.data.segments[1][1]]);
+            var seg1 = status.find(event.data.segments[0]),
+                // seg2 = status.find(event.data.segments[1]);
+                seg2 = status.prev(seg1) || status.next(seg1);
+            //
+            // var seg1 = status.find([event.data.point, event.data.segments[0][1]]),
+            //     seg2 = status.find([event.data.point, event.data.segments[1][1]]);
 
             if (seg1 && seg2) {
                 var segA = seg1.above;
@@ -183,7 +194,6 @@ function findIntersections(segments, map) {
                 seg2.below = seg1;
                 seg1.below = segB;
                 seg2.above = segA;
-
 
                 if (segA) {
                     var a2IntersectionPoint = utils.findSegmentsIntersection(seg2.key, segA.key);

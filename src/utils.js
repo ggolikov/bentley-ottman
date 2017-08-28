@@ -61,18 +61,24 @@ Utils.prototype = {
 
         // first, check left-ends
 
-        var x = Math.max(Math.min(x1, x2), Math.min(x3, x4));
+        // var x = Math.max(Math.min(x1, x2), Math.min(x3, x4));
         // console.log('x: ' + x);
         // console.log('y from x: ' + getY(b, x));
-        var ay =  getY(a, x);
-        var by =  getY(b, x);
+        var ay =  getY(a, this.x);
+        var by =  getY(b, this.x);
         // return getY(a, x) < getY(b, x) - EPS;
-        // L.marker(L.latLng([x, ay].slice().reverse())).bindPopup('1 > 2').addTo(map);
+        // L.marker(L.latLng([this.x, ay].slice().reverse())).bindPopup('1 > 2').addTo(map);
+        // L.polyline([
+        //     L.latLng([this.x, 55].slice().reverse()),
+        //     L.latLng([this.x, 57].slice().reverse())
+        // ], {
+        //     weight: 1
+        // }).bindPopup('' + this.x).addTo(map);
         // L.marker(L.latLng([x, by].slice().reverse())).bindPopup('2 > 1').addTo(map);
 
-        if (ay < by) {
+        if (Math.abs(ay - by) > EPS && ay < by) {
             return -1;
-        } else if (ay > by) {
+        } else if (Math.abs(ay - by) > EPS && ay > by) {
             return 1;
         }
 
@@ -83,12 +89,13 @@ Utils.prototype = {
         ay =  getY(a, x);
         by =  getY(b, x);
 
-        if (ay < by) {
+        // L.marker(L.latLng([this.x, ay].slice().reverse())).bindPopup('1 > 2').addTo(map);
+        if (Math.abs(ay - by) > EPS && ay < by) {
             return -1;
-        } else if (ay > by) {
+        } else if (Math.abs(ay - by) > EPS && ay > by) {
             return 1;
         }
-        
+
         return 0;
 
 
