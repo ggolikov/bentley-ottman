@@ -60,12 +60,24 @@ function findIntersections(segments, map) {
             var segA = status.prev(segE);
             var segB = status.next(segE);
 
-            if (!segA && segB) {
-                segB = status.next(status.next(segE));
-            }
-            if (segA && !segB) {
-                segA = status.prev(status.prev(segE));
-            }
+            // if (!segA && segB && status.next(status.next(segE))) {
+            //     segB = status.next(status.next(segE));
+            // }
+            // if (segA && !segB && status.prev(status.prev(segE))) {
+            //     segA = status.prev(status.prev(segE));
+            // }
+
+            console.log('segA:');
+            console.log(segA && segA.key.toString());
+
+            console.log('segE below:');
+            console.log(segE.below && segE.below.key.toString());
+
+            console.log('segB:');
+            console.log(segB && segB.key.toString());
+
+            console.log('segE above:');
+            console.log(segE.above && segE.above.key.toString());
 
             if (segB) {
                segE.above = segB;
@@ -109,10 +121,10 @@ function findIntersections(segments, map) {
             var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'red'}).addTo(map);
             var segE = status.find(event.data.segment);
 
-            var segA = segE.above;
-            var segB = segE.below;
-            // var segA = status.prev(segE);
-            // var segB = status.next(segE);
+            // var segA = segE.above;
+            // var segB = segE.below;
+            var segA = status.prev(segE);
+            var segB = status.next(segE);
 
             /*
              * LOG
@@ -136,15 +148,17 @@ function findIntersections(segments, map) {
                     console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
                 }
             }
+
             var nx = status.next(segE);
             if (nx){
-              nx.below = segE.below;
+                nx.below = segE.below;
             }
 
             var np = status.prev(segE);
             if (np){
-              np.above = segE.above;
+                np.above = segE.above;
             }
+
             status.remove(segE.key);
 
         } else {
@@ -152,25 +166,19 @@ function findIntersections(segments, map) {
             var mrk = L.circleMarker(ll, {radius: 4, color: 'blue', fillColor: 'blue'}).addTo(map);
             output.insert(event.data.point);
             //             Let segE1 above segE2 be E's intersecting segments in SL;
-            var seg1 = status.find(event.data.segments[0]),
-                seg2 = status.find(event.data.segments[1]);
+
+            status.remove(event.data.segments[1]);
+            status.remove(event.data.segments[0]);
+            status.insert([event.data.point, event.data.segments[0][1]]);
+            status.insert([event.data.point, event.data.segments[1][1]]);
+
+            var seg1 = status.find([event.data.point, event.data.segments[0][1]]),
+                seg2 = status.find([event.data.point, event.data.segments[1][1]]);
 
             if (seg1 && seg2) {
-
-                //             Swap their positions so that segE2 is now above segE1;
-                // console.log(status);
-                // status.prev(seg1) = status.find(seg2);
-                // status.next(seg2) = status.find(seg1);
-                //             Let segA = the segment above segE2 in SL;
-
-                // var segA = status.next(seg1);
-                //             Let segB = the segment below segE1 in SL;
-                // var segB = status.prev(seg2);
                 var segA = seg1.above;
                 var segB = seg2.below;
 
-                console.log(seg1.above);
-                console.log(seg2.below);
                 seg1.above = seg2;
                 seg2.below = seg1;
                 seg1.below = segB;
@@ -204,9 +212,10 @@ function findIntersections(segments, map) {
                     }
                 }
             }
-            i++;
 
-            }
+        }
+
+        i++;
     }
     window.status = status;
     window.queue = queue;

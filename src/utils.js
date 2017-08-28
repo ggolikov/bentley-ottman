@@ -59,9 +59,11 @@ Utils.prototype = {
             x4 = b[1][0],
             y4 = b[1][1];
 
+        // first, check left-ends
+
         var x = Math.max(Math.min(x1, x2), Math.min(x3, x4));
-        console.log('x: ' + x);
-        console.log('y from x: ' + getY(b, x));
+        // console.log('x: ' + x);
+        // console.log('y from x: ' + getY(b, x));
         var ay =  getY(a, x);
         var by =  getY(b, x);
         // return getY(a, x) < getY(b, x) - EPS;
@@ -72,9 +74,24 @@ Utils.prototype = {
             return -1;
         } else if (ay > by) {
             return 1;
-        } else {
-            return 0;
         }
+
+        // if a.leftPoint = b.leftPoint
+        // check right
+
+        x = Math.min(Math.max(x1, x2), Math.max(x3, x4));
+        ay =  getY(a, x);
+        by =  getY(b, x);
+
+        if (ay < by) {
+            return -1;
+        } else if (ay > by) {
+            return 1;
+        }
+        
+        return 0;
+
+
         // if (y1 < by) {
         //     return -1;
         // } else if (y1 > by) {
