@@ -60,6 +60,13 @@ function findIntersections(segments, map) {
             var segA = status.prev(segE);
             var segB = status.next(segE);
 
+            if (!segA && segB) {
+                segB = status.next(status.next(segE));
+            }
+            if (segA && !segB) {
+                segA = status.prev(status.prev(segE));
+            }
+
             if (segB) {
                segE.above = segB;
                segE.above.below = segE;
@@ -69,11 +76,10 @@ function findIntersections(segments, map) {
                segE.below.above = segE;
             }
 
-
             if (segA) {
                 var eaIntersectionPoint = utils.findSegmentsIntersection(segE.key, segA.key);
 
-                if (eaIntersectionPoint) {
+                if (eaIntersectionPoint && !output.find(eaIntersectionPoint)) {
                     var eaIntersectionPointData = {
                         point: eaIntersectionPoint,
                         type: 'intersection',
@@ -119,17 +125,15 @@ function findIntersections(segments, map) {
             if (segA && segB) {
                 var abIntersectionPoint = utils.findSegmentsIntersection(segA.key, segB.key);
 
-                if (abIntersectionPoint) {
-                    if (!output.find(abIntersectionPoint)) {
-                        var abIntersectionPointData = {
-                            point: abIntersectionPoint,
-                            type: 'intersection',
-                            segments: [segA.key, segB.key]
-                        }
-                        //                 Insert I into EQ;
-                        queue.insert(abIntersectionPoint, abIntersectionPointData);
-                        console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
+                if (abIntersectionPoint && !output.find(abIntersectionPoint)) {
+                    var abIntersectionPointData = {
+                        point: abIntersectionPoint,
+                        type: 'intersection',
+                        segments: [segA.key, segB.key]
                     }
+                    //                 Insert I into EQ;
+                    queue.insert(abIntersectionPoint, abIntersectionPointData);
+                    console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
                 }
             }
             var nx = status.next(segE);
@@ -169,37 +173,34 @@ function findIntersections(segments, map) {
                 console.log(seg2.below);
                 seg1.above = seg2;
                 seg2.below = seg1;
+                seg1.below = segB;
+                seg2.above = segA;
+
 
                 if (segA) {
                     var a2IntersectionPoint = utils.findSegmentsIntersection(seg2.key, segA.key);
 
-                    if (a2IntersectionPoint) {
-                        if (!output.find(a2IntersectionPoint)) {
-                            var a2IntersectionPointData = {
-                                point: a2IntersectionPoint,
-                                type: 'intersection',
-                                segments: [segA.key, seg2.key]
-                            }
-                            queue.insert(a2IntersectionPoint, a2IntersectionPointData);
-                            console.log('inserted a2IntersectionPoint:' + a2IntersectionPoint.toString());
-
+                    if (a2IntersectionPoint && !output.find(a2IntersectionPoint)) {
+                        var a2IntersectionPointData = {
+                            point: a2IntersectionPoint,
+                            type: 'intersection',
+                            segments: [segA.key, seg2.key]
                         }
+                        queue.insert(a2IntersectionPoint, a2IntersectionPointData);
+                        console.log('inserted a2IntersectionPoint:' + a2IntersectionPoint.toString());
                     }
                 }
                 if (segB) {
                     var b1IntersectionPoint = utils.findSegmentsIntersection(seg1.key, segB.key);
 
-                    if (b1IntersectionPoint) {
-                        if (!output.find(b1IntersectionPoint)) {
-                            var b1IntersectionPointData = {
-                                point: b1IntersectionPoint,
-                                type: 'intersection',
-                                segments: [seg1.key, segB.key]
-                            }
-                            queue.insert(b1IntersectionPoint, b1IntersectionPointData);
-                            console.log('inserted b1IntersectionPoint:' + b1IntersectionPoint.toString());
-
+                    if (b1IntersectionPoint && !output.find(b1IntersectionPoint)) {
+                        var b1IntersectionPointData = {
+                            point: b1IntersectionPoint,
+                            type: 'intersection',
+                            segments: [seg1.key, segB.key]
                         }
+                        queue.insert(b1IntersectionPoint, b1IntersectionPointData);
+                        console.log('inserted b1IntersectionPoint:' + b1IntersectionPoint.toString());
                     }
                 }
             }
