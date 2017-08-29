@@ -43,9 +43,25 @@ function findIntersections(segments, map) {
         ctx.x = p[0];
 
         console.log(i + ') current point: ' + event.data.point.toString());
-        console.log('   point type: ' + event.data.type);
+        // console.log('   point type: ' + event.data.type);
         // console.log('   queue: ' + queue.toString());
-        console.log('   status: ' + status.toString());
+        // console.log('   status: ' + status.toString());
+
+        var keys = status.keys();
+        if (keys.length) {
+            var counter = keys.length - 1;
+
+            var mn = status.maxNode();
+
+            console.log(counter + ': ' + mn.key.toString());
+
+            while(status.prev(mn)) {
+                console.log(--counter + ': ' + status.prev(mn).key.toString());
+                mn = status.prev(mn);
+            }
+
+        }
+
 
         if (event.data.type === 'begin') {
 
@@ -75,17 +91,17 @@ function findIntersections(segments, map) {
             //     segA = status.prev(status.prev(segE));
             // }
 
-            console.log('segA:');
-            console.log(segA && segA.key.toString());
-
-            console.log('segE below:');
-            console.log(segE.below && segE.below.key.toString());
-
-            console.log('segB:');
-            console.log(segB && segB.key.toString());
-
-            console.log('segE above:');
-            console.log(segE.above && segE.above.key.toString());
+            // console.log('segA:');
+            // console.log(segA && segA.key.toString());
+            //
+            // console.log('segE below:');
+            // console.log(segE.below && segE.below.key.toString());
+            //
+            // console.log('segB:');
+            // console.log(segB && segB.key.toString());
+            //
+            // console.log('segE above:');
+            // console.log(segE.above && segE.above.key.toString());
 
             if (segB) {
                segE.above = segB;
@@ -179,9 +195,15 @@ function findIntersections(segments, map) {
             // status.insert(event.data.segments[0]);
             // status.insert(event.data.segments[1]);
 
+            // status.find() возвращает одну и ту же ноду
+
             var seg1 = status.find(event.data.segments[0]),
-                // seg2 = status.find(event.data.segments[1]);
-                seg2 = status.prev(seg1) || status.next(seg1);
+                seg2 = status.prev(seg1);
+
+            var tempRight = seg1.right;
+            seg1.right = seg2;
+            seg1.left = tempRight;
+
             //
             // var seg1 = status.find([event.data.point, event.data.segments[0][1]]),
             //     seg2 = status.find([event.data.point, event.data.segments[1][1]]);
