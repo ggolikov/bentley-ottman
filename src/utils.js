@@ -59,6 +59,77 @@ Utils.prototype = {
             x4 = b[1][0],
             y4 = b[1][1];
 
+        var currentX,   // текущий x свиплайна
+            ay,         // y точки пересечения отрезка события a со свиплайном
+            by,         // y точки пересечения отрезка события b со свиплайном
+            deltaY,     // разница y точек пересечения
+            deltaX1,    // разница x начал отрезков
+            deltaX2;    // разница x концов отрезков
+
+        if (a === b) {
+            return 0;
+        }
+
+        currentX = this.x;
+        ay = getY(a, currentX);
+        by = getY(b, currentX);
+        deltaY = ay - by;
+
+        // сравнение надо проводить с эпсилоном,
+        // иначе возможны ошибки округления
+        if (Math.abs(deltaY) > EPS) {
+            return deltaY < 0 ? -1 : 1;
+        // если y обеих событий равны
+        // проверяем угол прямых
+        // чем круче прямая, тем ниже ее левый конец, значит событие располагаем ниже
+        } else {
+            var aSlope = getSlope(a),
+                bSlope = getSlope(b);
+
+            if (aSlope !== bSlope) {
+                if (this.before) {
+                    return aSlope > bSlope ? -1 : 1;
+                } else {
+                    return aSlope > bSlope ? 1 : -1;
+                }
+            }
+        }
+        // после сравнения по y пересечения со свиплайном
+        // и сравнения уклонов
+        // остается случай, когда уклоны равны
+        // (if aSlope === bSlope)
+        // и 2 отрезка лежат на одной прямой
+        // в таком случае
+        // проверим положение концов отрезков
+        deltaX1 = x1 - x3;
+
+        // проверим взаимное положение левых концов
+        if (deltaX1 !== 0) {
+            return deltaX1 < 0 ? -1 : 1;
+        }
+
+        // проверим взаимное положение правых концов
+        deltaX2 = x2 - x4;
+
+        if (deltaX2 !== 0) {
+            return deltaX2 < 0 ? -1 : 1;
+        }
+
+        // отрезки совпадают
+        return 0;
+
+    },
+
+    compareSegments00: function (a, b) {
+        var x1 = a[0][0],
+            y1 = a[0][1],
+            x2 = a[1][0],
+            y2 = a[1][1],
+            x3 = b[0][0],
+            y3 = b[0][1],
+            x4 = b[1][0],
+            y4 = b[1][1];
+
         // first, check left-ends
 
         // var x = Math.max(Math.min(x1, x2), Math.min(x3, x4));
@@ -180,20 +251,55 @@ Utils.prototype = {
         return ((x - x1) * (y2 - y1) - (y - y1) * (x2 - x1) === 0) && ((x > x1 && x < x2) || (x > x2 && x < x1));
     },
 
-    findY: function (point1, point2, x) {
-        var x1 = point1[0],
-            y1 = point1[1],
-            x2 = point2[0],
-            y2 = point2[1],
-            a = y1 - y2,
-            b = x2 - x1,
-            c = x1 * y2 - x2 * y1;
+}
 
-            return (-c - a * x) / b;
+function getSlope(segment) {
+    var x1 = segment[0][0],
+        y1 = segment[0][1],
+        x2 = segment[1][0],
+        y2 = segment[1][1];
+
+    if (x1 === x2) {
+        return (y1 < y2) ? Infinity : - Infinity;
+    } else {
+        return (y2 - y1) / (x2 - x1);
     }
 }
 
-function getY(segment, x) {
+function getY (segment, x) {
+    var begin = segment[0],
+        end = segment[1],
+        span = segment[1][0] - segment[0][0],
+        deltaX0, // разница между x и x начала отрезка
+        deltaX1, // разница между x конца отрезка и x
+        ifac,    // пропорция deltaX0 к проекции
+        fac;     // пропорция deltaX1 к проекции
+
+    // в случае, если x не пересекается с проекцией отрезка на ось x,
+    // возврщает y начала или конца отрезка
+    if (x <= begin[0]) {
+        return begin[1];
+    } else if (x >= end[0]) {
+        return end[1];
+    }
+
+    // если x лежит внутри проекции отрезка на ось x
+    // вычисляет пропорции
+    deltaX0 = x - begin[0];
+    deltaX1 = end[0] - x;
+
+    if (deltaX0 > deltaX1) {
+        ifac = deltaX0 / span
+        fac = 1 - ifac;
+    } else {
+        fac = deltaX1 / span
+        ifac = 1 - fac;
+    }
+
+    return (begin[1] * fac) + (end[1] * ifac);
+}
+
+function getY00(segment, x) {
     var x1 = segment[0][0],
         y1 = segment[0][1],
         x2 = segment[1][0],
