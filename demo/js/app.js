@@ -22,7 +22,7 @@ var bounds = map.getBounds(),
     qWidth = width / 4,
     lines = [];
 
-var points = turf.random('points', 18, {
+var points = turf.random('points', 10, {
     bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
 });
 
@@ -34,11 +34,11 @@ for (var i = 0; i < coords.length; i+=2) {
     lines.push([coords[i], coords[i+1]]);
 }
 
-drawLines(lines);
-// drawLines(data);
+// drawLines(lines);
+drawLines(data);
 
-var ps = findIntersections(lines, map);
-// var ps = findIntersections(data, map);
+// var ps = findIntersections(lines, map);
+var ps = findIntersections(data, map);
 
 ps.forEach(function (p) {
     L.circleMarker(L.latLng(p.slice().reverse()), {radius: 5, color: 'blue', fillColor: 'blue'}).addTo(map);

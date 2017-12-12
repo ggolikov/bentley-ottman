@@ -1,5 +1,9 @@
 var Tree = require('avl'),
+    Sweepline = require('./sl'),
     utils = require('./utils');
+
+
+
 
 /**
  * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
@@ -10,6 +14,8 @@ function findIntersections(segments, map) {
         x: null,
         before: null
     };
+
+    var ctx = new Sweepline('begin');
 
     var queue = new Tree(utils.comparePoints),
         status = new Tree(utils.compareSegments.bind(ctx)),
@@ -41,12 +47,14 @@ function findIntersections(segments, map) {
         var event = queue.pop();
         var p = event.data.point;
 
-        ctx.x = p[0];
+        ctx.setX(p[0]);
+
+        // ctx.x = p[0];
 
         console.log(i + ') current point: ' + event.data.point.toString());
         // console.log('   point type: ' + event.data.type);
         // console.log('   queue: ' + queue.toString());
-        // console.log('   status: ' + status.toString());
+        console.log('   status: ' + status.toString());
 
         var keys = status.keys();
         if (keys.length) {
@@ -65,7 +73,7 @@ function findIntersections(segments, map) {
 
 
         if (event.data.type === 'begin') {
-            ctx.before = null;
+            // ctx.before = null;
 
             var ll = L.latLng([p[1], p[0]]);
             var mrk = L.circleMarker(ll, {radius: 4, color: 'green', fillColor: 'green'}).addTo(map);
@@ -77,26 +85,9 @@ function findIntersections(segments, map) {
 
             line.bindPopup('added' + i);
 
-            var begin = status.minNode();
 
             var segA = status.prev(segE);
             var segB = status.next(segE);
-
-            if (segA !== begin) {
-                segA = status.prev(segE);
-            } else {
-                segA = begin;
-                segA = status.prev(segA);
-                segA = status.next(segA);
-            }
-            // next = sweepLine.next(next);
-
-            // if (!segA && segB && status.next(status.next(segE))) {
-            //     segB = status.next(status.next(segE));
-            // }
-            // if (segA && !segB && status.prev(status.prev(segE))) {
-            //     segA = status.prev(status.prev(segE));
-            // }
 
             if (segB) {
                segE.above = segB;
@@ -136,7 +127,7 @@ function findIntersections(segments, map) {
             }
             //         Else If (E is a right endpoint) {
         } else if (event.data.type === 'end') {
-            ctx.before = null;
+            // ctx.position = 'before';
             var ll = L.latLng([p[1], p[0]]);
             var mrk = L.circleMarker(ll, {radius: 4, color: 'red', fillColor: 'red'}).addTo(map);
             var segE = status.find(event.data.segment);
@@ -149,10 +140,10 @@ function findIntersections(segments, map) {
             /*
              * LOG
              */
-             var lls = segE.key.map(function(p){return L.latLng(p.slice().reverse())});
-             var line = L.polyline(lls, {color: 'red'}).addTo(map);
+            //  var lls = segE.key.map(function(p){return L.latLng(p.slice().reverse())});
+            //  var line = L.polyline(lls, {color: 'red'}).addTo(map);
 
-             line.bindPopup('removed' + i);
+            //  line.bindPopup('removed' + i);
 
             if (segA && segB) {
                 var abIntersectionPoint = utils.findSegmentsIntersection(segA.key, segB.key);
@@ -168,41 +159,31 @@ function findIntersections(segments, map) {
                     console.log('inserted abIntersectionPoint:' + abIntersectionPoint.toString());
                 }
             }
+            if (segE) {
+                var nx = status.next(segE);
+                if (nx){
+                    nx.below = segE.below;
+                }
 
-            var nx = status.next(segE);
-            if (nx){
-                nx.below = segE.below;
+                var np = status.prev(segE);
+                if (np){
+                    np.above = segE.above;
+                }
+
+                status.remove(segE.key);
             }
-
-            var np = status.prev(segE);
-            if (np){
-                np.above = segE.above;
-            }
-
-            status.remove(segE.key);
 
         } else {
             var ll = L.latLng([p[1], p[0]]);
             var mrk = L.circleMarker(ll, {radius: 4, color: 'blue', fillColor: 'blue'}).addTo(map);
             output.insert(event.data.point);
 
-            ctx.before = true;
+            ctx.position = 'before';
+
             var seg1 = status.find(event.data.segments[0]),
                 seg2 = status.find(event.data.segments[1]);
-                // seg2 = status.prev(seg1);
-            //             Let segE1 above segE2 be E's intersecting segments in SL;
-            // status.find() возвращает одну и ту же ноду
 
-                // seg2 = status.prev(seg1);
-
-            // var tempRight = seg1.right;
-            // seg1.right = seg2;
-            // seg1.left = tempRight;
-
-            //
-            // var seg1 = status.find([event.data.point, event.data.segments[0][1]]),
-            //     seg2 = status.find([event.data.point, event.data.segments[1][1]]);
-
+            status.remove(seg1.key);
             if (seg1 && seg2) {
                 var segA = seg1.above;
                 var segB = seg2.below;
@@ -240,12 +221,7 @@ function findIntersections(segments, map) {
                 }
             }
 
-            // status.remove(event.data.segments[0]);
-            // status.remove(event.data.segments[1]);
-
-            ctx.before = null;
-            // status.insert(event.data.segments[1]);
-            // status.insert(event.data.segments[0]);
+            ctx.position = 'after';
         }
 
         i++;

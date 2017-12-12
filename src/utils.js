@@ -87,7 +87,7 @@ Utils.prototype = {
                 bSlope = getSlope(b);
 
             if (aSlope !== bSlope) {
-                if (this.before) {
+                if (this.position === 'before') {
                     return aSlope > bSlope ? -1 : 1;
                 } else {
                     return aSlope > bSlope ? 1 : -1;
