@@ -64,19 +64,52 @@ function segmentsIntersect(a, b) {
  * @param a segment1
  * @param b segment2
  */
-function compareSegments(a, b) {
+function compareSegments(a, b, x) {
     var intersect = segmentsIntersect(a, b);
-    var intersect = false;
+
+    // take the mostleft point from 2 segmentsIntersect
+    // and check cross product
     if (!intersect) {
-        var sort = [a, b].sort(comparePoints),
-            a = sort[0],
-            b = sort[1],
+        var order = comparePoints(a[0], b[0]),
+            p1, p2, p3, d;
+
+        if (order < 1) {
             p1 = a[0],
             p2 = a[1],
-            p3 = b[0],
+            p3 = b[0];
             d = direction(p1, p2, p3);
+            return d > 0 ? 1 : -1;
+        } else {
+            p1 = b[0],
+            p2 = b[1],
+            p3 = a[0];
+            d = direction(p1, p2, p3);
+            return d > 0 ? -1 : 1;
+        }
+    } else {
+        var asx = a[0][0],
+            asy = a[0][1],
+            afx = a[1][0],
+            afy = a[1][1],
+            bsx = b[0][0],
+            bsy = b[0][1],
+            bfx = b[1][0],
+            bfy = b[1][1],
+            eq;
 
-        return d > 0 ? 1 : -1;
+        eq = (afx - asx) * (bfx - bsx) * (bsy - asy) -
+             (afx - asx) * (bfy - bsy) * bsx +
+             (bfx - bsx) * (afy - asy) * asx -
+             (bfx - bsx) * (afy - asy) * x +
+             (afx - asx) * (bfy - bsy) * x;
+
+        if (eq < 0) {
+            return -1;
+        } else if (eq > 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
 
@@ -99,5 +132,6 @@ module.exports = {
     onSegment: onSegment,
     direction: direction,
     segmentsIntersect: segmentsIntersect,
-    compareSegments: compareSegments
+    compareSegments: compareSegments,
+    comparePoints: comparePoints
 }

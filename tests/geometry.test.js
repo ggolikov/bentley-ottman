@@ -23,12 +23,25 @@ var assert = require('chai').assert,
 //     });
 // });
 
-describe('sort segments', function() {
+// describe('sort non-intersecting segments', function() {
+//
+//     it('should place a first', () => {
+//         assert.equal(utils.compareSegments(segments[0], segments[3]), -1, 'first is above');
+//     });
+//     it('should place b first', () => {
+//         assert.equal(utils.compareSegments(segments[3], segments[0]), 1, 'first is below');
+//     });
+// });
 
-    it('should place b first', () => {
-        assert.equal(utils.compareSegments(segments[3], segments[0]), -1, 'first is the left');
+describe('sort intersecting segments', function() {
+
+    it('returns b is higher at 5', () => {
+        assert.equal(utils.compareSegments(segments[0], segments[1], 5), 1);
     });
-    // it('should show first', () => {
-    //     assert.equal(utils.compareSegments(segments[0], segments[1])[0][0][0], 0, 'first is the left');
-    // });
+    it('returns b is lower at -2', () => {
+        assert.equal(utils.compareSegments(segments[0], segments[1], -2), -1);
+    });
+    it('returns a & b are equal at 5', () => {
+        assert.equal(utils.compareSegments(segments[0], segments[2], 5), 0);
+    });
 });
