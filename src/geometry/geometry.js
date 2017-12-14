@@ -114,10 +114,12 @@ function compareSegments(a, b, x) {
 }
 
 function comparePoints(a, b) {
-    var x1 = a[0],
-        y1 = a[1],
-        x2 = b[0],
-        y2 = b[1];
+    var aIsArray = Array.isArray(a),
+        bIsArray = Array.isArray(b),
+        x1 = aIsArray ? a[0] : a.x,
+        y1 = aIsArray ? a[1] : a.y,
+        x2 = bIsArray ? b[0] : b.x,
+        y2 = bIsArray ? b[1] : b.y;
 
     if (x1 > x2 || (x1 === x2 && y1 > y2)) {
         return 1;
