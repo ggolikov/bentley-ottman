@@ -4,14 +4,20 @@ var Tree = require('avl'),
     utils = require('./geometry/geometry');
 
 
-var queue = new Tree(utils.comparePoints),
-    status = new Tree(utils.compareSegments/*BIND POINT HERE*/),
-    output = new Tree(utils.comparePoints);
+// var sweepline = new Sweepline('before'),
+//     queue = new Tree(utils.comparePoints),
+//     status = new Tree(utils.compareSegments.bind(sweepline)),
+//     output = new Tree(utils.comparePoints);
 
 /**
 * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
 */
-function findIntersections(segments) {
+function findIntersections(segments, map) {
+    var sweepline = new Sweepline('before'),
+        queue = new Tree(utils.comparePoints),
+        status = new Tree(utils.compareSegments.bind(sweepline)),
+        output = new Tree(utils.comparePoints);
+
     segments.forEach(function (segment, i, a) {
         segment.sort(utils.comparePoints);
         var begin = new Point(segment[0], 'begin'),
@@ -23,24 +29,29 @@ function findIntersections(segments) {
         } else {
             begin = queue.find(begin).key;
             begin.segments.push(segment);
-            // console.log('begin already there!');
         }
 
         if (!queue.contains(end)) {
             queue.insert(end, end);
         }
     });
-    // console.log(queue.toString());
-    // while (!queue.isEmpty()) {
-    //
-    // }
+    while (!queue.isEmpty()) {
+        var point = queue.pop();
+        // console.log(status.toString());
+        handleEventPoint(point.key, status, output, queue, sweepline, map);
+    }
+
     // window.status = status;
     // window.queue = queue;
-
-    return queue.keys();
+    return output.keys().map(function(key){
+        return [key.x, key.y];
+    });
 }
 
-function handleEventPoint(point, status, output) {
+function handleEventPoint(point, status, output, queue, sweepline, map) {
+    // L.circleMarker(L.latLng([point.y, point.x]), {radius: 5, color: 'blue', fillColor: 'blue'}).addTo(map);
+    sweepline.setPosition('before');
+    sweepline.setX(point.x);
     // step 1
     var Up = point.segments, // segments, for which this is the left end
         Lp = [],             // segments, for which this is the right end
@@ -59,7 +70,7 @@ function handleEventPoint(point, status, output) {
         } else {
             // filter left ends
             if (!(point.x === segmentBegin[0] && point.y === segmentBegin[1])) {
-                if (utils.direction(segmentBegin, segmentEnd, [point.x, point.y]) === 0 && utils.onSegment(segmentBegin, segmentEnd, [point.x, point.y])) {
+                if (utils.direction(segmentBegin, segmentEnd, [point.x, point.y]) < utils.EPS && utils.onSegment(segmentBegin, segmentEnd, [point.x, point.y])) {
                     Cp.push(segment);
                 }
             }
@@ -72,18 +83,16 @@ function handleEventPoint(point, status, output) {
     if ([].concat(Up, Lp, Cp).length > 1) {
         output.insert(point, point);
     };
+
     // step 5
-    for (var i = 0; i < Lp.length; i++) {
-        status.remove(Lp[i]);
-    }
     for (var j = 0; j < Cp.length; j++) {
         status.remove(Cp[j]);
     }
+
+    sweepline.setPosition('after');
+
     // step 6 Insert intersecting,
     // (step 7) here is the segments order changing
-    // HANDLE 'BEFORE/AFTER AND X HERE'
-    // this.after = true;
-    // this.x = x;
     for (var k = 0; k < Up.length; k++) {
         status.insert(Up[k]);
     }
@@ -92,25 +101,56 @@ function handleEventPoint(point, status, output) {
     }
     // handle right end-point case
     if (Up.length === 0 && Cp.length === 0) {
-        if (status.next())
-        // below
-        var sl = status.prev(/*segment*/)
-        // above
-        var sr = status.next(/*segment*/)
-        if (sl && sr) {
-            findNewEvent(sl, sr, point);
-        } else {
+        for (var i = 0; i < Lp.length; i++) {
+            var s = Lp[i],
+                sNode = status.find(s),
+                sl = status.prev(sNode),
+                sr = status.next(sNode);
 
+            if (sl && sr) {
+                findNewEvent(sl.key, sr.key, point, output, queue);
+            }
+
+            status.remove(s);
+        }
+    } else {
+        var UCp = [].concat(Up, Cp).sort(utils.compareSegments),
+            UCpmin = UCp[0],
+            sllNode = status.find(UCpmin),
+            UCpmax = UCp[UCp.length-1],
+            srrNode = status.find(UCpmax),
+            sll = sllNode && status.prev(sllNode),
+            srr = srrNode && status.next(srrNode);
+
+        if (sll && UCpmin) {
+            findNewEvent(sll.key, UCpmin, point, output, queue);
         }
 
+        if (srr && UCpmax) {
+            findNewEvent(srr.key, UCpmax, point, output, queue);
+        }
+
+        for (var j = 0; j < Lp.length; j++) {
+            status.remove(Lp[j]);
+        }
+    }
     return output;
 }
 
-function findNewEvent() {
+function findNewEvent(sl, sr, point, output, queue) {
+    var intersectionCoords = utils.findSegmentsIntersection(sl, sr),
+        intersectionPoint;
 
+    if (intersectionCoords) {
+        intersectionPoint = new Point(intersectionCoords, 'intersection');
+        queue.insert(intersectionPoint, intersectionPoint);
+        if (!output.contains(intersectionPoint)) {
+            output.insert(intersectionPoint, intersectionPoint);
+        }
+    }
 }
-
-module.exports = {
-    findIntersections: findIntersections,
-    handleEventPoint: handleEventPoint
-};
+module.exports = findIntersections;
+// module.exports = {
+//     findIntersections: findIntersections,
+//     handleEventPoint: handleEventPoint
+// };

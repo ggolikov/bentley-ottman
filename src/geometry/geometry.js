@@ -1,3 +1,4 @@
+var EPS = 1E-9;
 /**
  * @param a vector
  * @param b vector
@@ -60,58 +61,121 @@ function segmentsIntersect(a, b) {
     return false;
 }
 
-/**
- * @param a segment1
- * @param b segment2
- */
-function compareSegments(a, b, x) {
-    var intersect = segmentsIntersect(a, b);
-
-    // take the mostleft point from 2 segmentsIntersect
-    // and check cross product
-    if (!intersect) {
-        var order = comparePoints(a[0], b[0]),
-            p1, p2, p3, d;
-
-        if (order < 1) {
-            p1 = a[0],
-            p2 = a[1],
-            p3 = b[0];
-            d = direction(p1, p2, p3);
-            return d > 0 ? 1 : -1;
-        } else {
-            p1 = b[0],
-            p2 = b[1],
-            p3 = a[0];
-            d = direction(p1, p2, p3);
-            return d > 0 ? -1 : 1;
-        }
+function findSegmentsIntersection (a, b) {
+    var x1 = a[0][0],
+        y1 = a[0][1],
+        x2 = a[1][0],
+        y2 = a[1][1],
+        x3 = b[0][0],
+        y3 = b[0][1],
+        x4 = b[1][0],
+        y4 = b[1][1];
+    var x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
+        ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+    var y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
+        ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+    if (isNaN(x)||isNaN(y)) {
+        return false;
     } else {
-        var asx = a[0][0],
-            asy = a[0][1],
-            afx = a[1][0],
-            afy = a[1][1],
-            bsx = b[0][0],
-            bsy = b[0][1],
-            bfx = b[1][0],
-            bfy = b[1][1],
-            eq;
-
-        eq = (afx - asx) * (bfx - bsx) * (bsy - asy) -
-             (afx - asx) * (bfy - bsy) * bsx +
-             (bfx - bsx) * (afy - asy) * asx -
-             (bfx - bsx) * (afy - asy) * x +
-             (afx - asx) * (bfy - bsy) * x;
-
-        if (eq < 0) {
-            return -1;
-        } else if (eq > 0) {
-            return 1;
+        if (x1 >= x2) {
+            if (!between(x2, x, x1)) {return false;}
         } else {
-            return 0;
+            if (!between(x1, x, x2)) {return false;}
+        }
+        if (y1 >= y2) {
+            if (!between(y2, y, y1)) {return false;}
+        } else {
+            if (!between(y1, y, y2)) {return false;}
+        }
+        if (x3 >= x4) {
+            if (!between(x4, x, x3)) {return false;}
+        } else {
+            if (!between(x3, x, x4)) {return false;}
+        }
+        if (y3 >= y4) {
+            if (!between(y4, y, y3)) {return false;}
+        } else {
+            if (!between(y3, y, y4)) {return false;}
         }
     }
+    return [x, y];
 }
+
+function between (a, b, c) {
+    return a-EPS <= b && b <= c+EPS;
+}
+
+
+function compareSegments(a, b) {
+    var x1 = a[0][0],
+        y1 = a[0][1],
+        x2 = a[1][0],
+        y2 = a[1][1],
+        x3 = b[0][0],
+        y3 = b[0][1],
+        x4 = b[1][0],
+        y4 = b[1][1];
+
+    var currentX,   // текущий x свиплайна
+        ay,         // y точки пересечения отрезка события a со свиплайном
+        by,         // y точки пересечения отрезка события b со свиплайном
+        deltaY,     // разница y точек пересечения
+        deltaX1,    // разница x начал отрезков
+        deltaX2;    // разница x концов отрезков
+
+    if (a === b) {
+        return 0;
+    }
+
+    currentX = this.x;
+    ay = getY(a, currentX);
+    by = getY(b, currentX);
+    deltaY = ay - by;
+
+    // сравнение надо проводить с эпсилоном,
+    // иначе возможны ошибки округления
+    if (Math.abs(deltaY) > EPS) {
+        return deltaY < 0 ? -1 : 1;
+    // если y обеих событий равны
+    // проверяем угол прямых
+    // чем круче прямая, тем ниже ее левый конец, значит событие располагаем ниже
+    } else {
+        var aSlope = getSlope(a),
+            bSlope = getSlope(b);
+
+        if (aSlope !== bSlope) {
+            if (this.position === 'before') {
+                return aSlope > bSlope ? -1 : 1;
+            } else {
+                return aSlope > bSlope ? 1 : -1;
+            }
+        }
+    }
+    // после сравнения по y пересечения со свиплайном
+    // и сравнения уклонов
+    // остается случай, когда уклоны равны
+    // (if aSlope === bSlope)
+    // и 2 отрезка лежат на одной прямой
+    // в таком случае
+    // проверим положение концов отрезков
+    deltaX1 = x1 - x3;
+
+    // проверим взаимное положение левых концов
+    if (deltaX1 !== 0) {
+        return deltaX1 < 0 ? -1 : 1;
+    }
+
+    // проверим взаимное положение правых концов
+    deltaX2 = x2 - x4;
+
+    if (deltaX2 !== 0) {
+        return deltaX2 < 0 ? -1 : 1;
+    }
+
+    // отрезки совпадают
+    return 0;
+
+};
 
 function comparePoints(a, b) {
     var aIsArray = Array.isArray(a),
@@ -130,10 +194,58 @@ function comparePoints(a, b) {
     }
 }
 
+function getSlope(segment) {
+    var x1 = segment[0][0],
+        y1 = segment[0][1],
+        x2 = segment[1][0],
+        y2 = segment[1][1];
+
+    if (x1 === x2) {
+        return (y1 < y2) ? Infinity : - Infinity;
+    } else {
+        return (y2 - y1) / (x2 - x1);
+    }
+};
+
+function getY(segment, x) {
+    var begin = segment[0],
+        end = segment[1],
+        span = segment[1][0] - segment[0][0],
+        deltaX0, // разница между x и x начала отрезка
+        deltaX1, // разница между x конца отрезка и x
+        ifac,    // пропорция deltaX0 к проекции
+        fac;     // пропорция deltaX1 к проекции
+
+    // в случае, если x не пересекается с проекцией отрезка на ось x,
+    // возврщает y начала или конца отрезка
+    if (x <= begin[0]) {
+        return begin[1];
+    } else if (x >= end[0]) {
+        return end[1];
+    }
+
+    // если x лежит внутри проекции отрезка на ось x
+    // вычисляет пропорции
+    deltaX0 = x - begin[0];
+    deltaX1 = end[0] - x;
+
+    if (deltaX0 > deltaX1) {
+        ifac = deltaX0 / span
+        fac = 1 - ifac;
+    } else {
+        fac = deltaX1 / span
+        ifac = 1 - fac;
+    }
+
+    return (begin[1] * fac) + (end[1] * ifac);
+};
+
 module.exports = {
+    EPS: EPS,
     onSegment: onSegment,
     direction: direction,
     segmentsIntersect: segmentsIntersect,
+    findSegmentsIntersection: findSegmentsIntersection,
     compareSegments: compareSegments,
     comparePoints: comparePoints
 }

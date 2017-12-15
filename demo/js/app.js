@@ -20,34 +20,43 @@ var bounds = map.getBounds(),
     width = e - w,
     qHeight = height / 4,
     qWidth = width / 4,
+    random = true,
+    pointsCount = 30,
     lines = [];
 
-var points = turf.random('points', 10, {
-    bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
-});
+if (random) {
+    data = [];
+    var points = turf.randomPoint(pointsCount, {
+        bbox: [w + qWidth, s + qHeight, e - qWidth, n - qHeight]
+    });
 
-var coords = points.features.map(function(feature) {
-    return feature.geometry.coordinates;
-})
+    var coords = points.features.map(function(feature) {
+        return feature.geometry.coordinates;
+    })
 
-for (var i = 0; i < coords.length; i+=2) {
-    lines.push([coords[i], coords[i+1]]);
+    for (var i = 0; i < coords.length; i+=2) {
+        data.push([coords[i], coords[i+1]]);
+    }
+    // console.log(JSON.stringify(data));
 }
 
-// drawLines(lines);
-drawLines(data);
 
-// var ps = findIntersections(lines, map);
+// drawLines(data);
+console.log(pointsCount / 2);
+console.time('counting...');
 var ps = findIntersections(data, map);
+console.timeEnd('counting...');
+console.log(ps);
+console.log(ps.length);
 
 ps.forEach(function (p) {
-    L.circleMarker(L.latLng(p.slice().reverse()), {radius: 5, color: 'blue', fillColor: 'blue'}).addTo(map);
+    // L.circleMarker(L.latLng(p.slice().reverse()), {radius: 5, color: 'blue', fillColor: 'blue'}).addTo(map);
 })
 
 function drawLines(array) {
     array.forEach(function (line) {
-        var begin = line[0],
-            end = line[1];
+        var begin = line[0].slice().reverse(),
+            end = line[1].slice().reverse();
 
         L.circleMarker(L.latLng(begin), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
         L.circleMarker(L.latLng(end), {radius: 2, fillColor: "#FFFF00", weight: 2}).addTo(map);
