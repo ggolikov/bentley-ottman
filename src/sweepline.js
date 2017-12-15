@@ -66,8 +66,11 @@ function handleEventPoint(point, status, output) {
         }
     });
     // step 3
+    // handle every intersection
+    // there is always one of cases: Up.length || Cp.length || Lp.length
+    // point in always the left || the right || on-segment
     if ([].concat(Up, Lp, Cp).length > 1) {
-        output.insert(point, point)
+        output.insert(point, point);
     };
     // step 5
     for (var i = 0; i < Lp.length; i++) {
@@ -77,7 +80,7 @@ function handleEventPoint(point, status, output) {
         status.remove(Cp[j]);
     }
     // step 6 Insert intersecting,
-    // here is the segments order changing
+    // (step 7) here is the segments order changing
     // HANDLE 'BEFORE/AFTER AND X HERE'
     // this.after = true;
     // this.x = x;
@@ -87,12 +90,18 @@ function handleEventPoint(point, status, output) {
     for (var l = 0; l < Cp.length; l++) {
         status.insert(Cp[l]);
     }
+    // handle right end-point case
+    if (Up.length === 0 && Cp.length === 0) {
+        if (status.next())
+        // below
+        var sl = status.prev(/*segment*/)
+        // above
+        var sr = status.next(/*segment*/)
+        if (sl && sr) {
+            findNewEvent(sl, sr, point);
+        } else {
 
-    if (Up.length > 0 && Cp.length > 0) {
-        findNewEvent();
-    } else {
-
-    }
+        }
 
     return output;
 }
