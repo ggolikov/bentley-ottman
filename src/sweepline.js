@@ -1,22 +1,18 @@
+// 1) EPS-round intersections
+// 2) handle ends
 var Tree = require('avl'),
     Sweepline = require('./sl'),
     Point = require('./point'),
     utils = require('./geometry/geometry');
-
-
-// var sweepline = new Sweepline('before'),
-//     queue = new Tree(utils.comparePoints),
-//     status = new Tree(utils.compareSegments.bind(sweepline)),
-//     output = new Tree(utils.comparePoints);
 
 /**
 * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
 */
 function findIntersections(segments, map) {
     var sweepline = new Sweepline('before'),
-        queue = new Tree(utils.comparePoints),
+        queue = new Tree(utils.comparePoints, true),
         status = new Tree(utils.compareSegments.bind(sweepline)),
-        output = new Tree(utils.comparePoints);
+        output = new Tree(utils.comparePoints, true);
 
     segments.forEach(function (segment, i, a) {
         segment.sort(utils.comparePoints);
@@ -35,9 +31,10 @@ function findIntersections(segments, map) {
             queue.insert(end, end);
         }
     });
+    console.log(queue.keys());
+    console.log(queue.keys().length);
     while (!queue.isEmpty()) {
         var point = queue.pop();
-        // console.log(status.toString());
         handleEventPoint(point.key, status, output, queue, sweepline, map);
     }
 
@@ -70,7 +67,7 @@ function handleEventPoint(point, status, output, queue, sweepline, map) {
         } else {
             // filter left ends
             if (!(point.x === segmentBegin[0] && point.y === segmentBegin[1])) {
-                if (utils.direction(segmentBegin, segmentEnd, [point.x, point.y]) < utils.EPS && utils.onSegment(segmentBegin, segmentEnd, [point.x, point.y])) {
+                if (Math.abs(utils.direction(segmentBegin, segmentEnd, [point.x, point.y])) < utils.EPS && utils.onSegment(segmentBegin, segmentEnd, [point.x, point.y])) {
                     Cp.push(segment);
                 }
             }
@@ -81,7 +78,10 @@ function handleEventPoint(point, status, output, queue, sweepline, map) {
     // there is always one of cases: Up.length || Cp.length || Lp.length
     // point in always the left || the right || on-segment
     if ([].concat(Up, Lp, Cp).length > 1) {
-        output.insert(point, point);
+        if (!output.contains(point)) {
+            console.log('output.insert');
+            output.insert(point, point);
+        }
     };
 
     // step 5
@@ -142,15 +142,14 @@ function findNewEvent(sl, sr, point, output, queue) {
         intersectionPoint;
 
     if (intersectionCoords) {
+        // console.log('point');
+        // console.log(point);
+        // console.log('intersectionCoords');
+        // console.log(intersectionCoords);
         intersectionPoint = new Point(intersectionCoords, 'intersection');
+
         queue.insert(intersectionPoint, intersectionPoint);
-        if (!output.contains(intersectionPoint)) {
-            output.insert(intersectionPoint, intersectionPoint);
-        }
+        output.insert(intersectionPoint, intersectionPoint);
     }
 }
 module.exports = findIntersections;
-// module.exports = {
-//     findIntersections: findIntersections,
-//     handleEventPoint: handleEventPoint
-// };
