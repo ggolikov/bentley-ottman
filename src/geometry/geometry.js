@@ -1,4 +1,5 @@
 var EPS = 1E-9;
+
 /**
  * @param a vector
  * @param b vector
@@ -61,6 +62,10 @@ function segmentsIntersect(a, b) {
     return false;
 }
 
+/**
+ * @param a segment1
+ * @param b segment2
+ */
 function findSegmentsIntersection (a, b) {
     var x1 = a[0][0],
         y1 = a[0][1],
@@ -102,10 +107,13 @@ function findSegmentsIntersection (a, b) {
 }
 
 function between (a, b, c) {
-    return a-EPS <= b && b <= c+EPS;
+    return a - EPS <= b && b <= c + EPS;
 }
 
-
+/**
+ * @param a segment1
+ * @param b segment2
+ */
 function compareSegments(a, b) {
     var x1 = a[0][0],
         y1 = a[0][1],
@@ -116,12 +124,12 @@ function compareSegments(a, b) {
         x4 = b[1][0],
         y4 = b[1][1];
 
-    var currentX,   // текущий x свиплайна
-        ay,         // y точки пересечения отрезка события a со свиплайном
-        by,         // y точки пересечения отрезка события b со свиплайном
-        deltaY,     // разница y точек пересечения
-        deltaX1,    // разница x начал отрезков
-        deltaX2;    // разница x концов отрезков
+    var currentX,
+        ay,
+        by,
+        deltaY,
+        deltaX1,
+        deltaX2;
 
     if (a === b) {
         return 0;
@@ -132,13 +140,8 @@ function compareSegments(a, b) {
     by = getY(b, currentX);
     deltaY = ay - by;
 
-    // сравнение надо проводить с эпсилоном,
-    // иначе возможны ошибки округления
     if (Math.abs(deltaY) > EPS) {
         return deltaY < 0 ? -1 : 1;
-    // если y обеих событий равны
-    // проверяем угол прямых
-    // чем круче прямая, тем ниже ее левый конец, значит событие располагаем ниже
     } else {
         var aSlope = getSlope(a),
             bSlope = getSlope(b);
@@ -151,32 +154,25 @@ function compareSegments(a, b) {
             }
         }
     }
-    // после сравнения по y пересечения со свиплайном
-    // и сравнения уклонов
-    // остается случай, когда уклоны равны
-    // (if aSlope === bSlope)
-    // и 2 отрезка лежат на одной прямой
-    // в таком случае
-    // проверим положение концов отрезков
     deltaX1 = x1 - x3;
 
-    // проверим взаимное положение левых концов
     if (deltaX1 !== 0) {
         return deltaX1 < 0 ? -1 : 1;
     }
 
-    // проверим взаимное положение правых концов
     deltaX2 = x2 - x4;
 
     if (deltaX2 !== 0) {
         return deltaX2 < 0 ? -1 : 1;
     }
 
-    // отрезки совпадают
     return 0;
-
 };
 
+/**
+ * @param a point1
+ * @param b point2
+ */
 function comparePoints(a, b) {
     var aIsArray = Array.isArray(a),
         bIsArray = Array.isArray(b),
@@ -211,21 +207,17 @@ function getY(segment, x) {
     var begin = segment[0],
         end = segment[1],
         span = segment[1][0] - segment[0][0],
-        deltaX0, // разница между x и x начала отрезка
-        deltaX1, // разница между x конца отрезка и x
-        ifac,    // пропорция deltaX0 к проекции
-        fac;     // пропорция deltaX1 к проекции
+        deltaX0,
+        deltaX1,
+        ifac,
+        fac;
 
-    // в случае, если x не пересекается с проекцией отрезка на ось x,
-    // возврщает y начала или конца отрезка
     if (x <= begin[0]) {
         return begin[1];
     } else if (x >= end[0]) {
         return end[1];
     }
 
-    // если x лежит внутри проекции отрезка на ось x
-    // вычисляет пропорции
     deltaX0 = x - begin[0];
     deltaX1 = end[0] - x;
 

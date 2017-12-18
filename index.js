@@ -1,3 +1,3 @@
-var findIntersections = require('./src/sweepline.js');
+var findIntersections = require('./src/findIntersections.js');
 
 module.exports = findIntersections;

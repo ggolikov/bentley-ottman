@@ -18,6 +18,7 @@ body {
     width: 350px;
     height: 100%;
     float: left;
+    text-align: center;
 }
 #map {
     height: 100%;
@@ -29,4 +30,12 @@ body {
 
 .header {
     text-align: center;
+}
+
+.segments-number {
+    width: 60px;
+}
+
+.row {
+    margin-bottom: 4px;
 }
