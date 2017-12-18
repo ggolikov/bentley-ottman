@@ -27,14 +27,16 @@ function findIntersections(segments, map) {
             begin.segments.push(segment);
         }
 
-        if (!queue.contains(end)) {
+        // if (!queue.contains(end)) {
             queue.insert(end, end);
-        }
+        // }
     });
     console.log(queue.keys());
     console.log(queue.keys().length);
     while (!queue.isEmpty()) {
         var point = queue.pop();
+        console.log('STEP');
+
         handleEventPoint(point.key, status, output, queue, sweepline, map);
     }
 
@@ -78,10 +80,9 @@ function handleEventPoint(point, status, output, queue, sweepline, map) {
     // there is always one of cases: Up.length || Cp.length || Lp.length
     // point in always the left || the right || on-segment
     if ([].concat(Up, Lp, Cp).length > 1) {
-        if (!output.contains(point)) {
-            console.log('output.insert');
-            output.insert(point, point);
-        }
+        console.log('output.insert from first');
+        // console.log(point);
+        output.insert(point, point);
     };
 
     // step 5
@@ -147,6 +148,7 @@ function findNewEvent(sl, sr, point, output, queue) {
         // console.log('intersectionCoords');
         // console.log(intersectionCoords);
         intersectionPoint = new Point(intersectionCoords, 'intersection');
+        console.log('output.insert from second');
 
         queue.insert(intersectionPoint, intersectionPoint);
         output.insert(intersectionPoint, intersectionPoint);

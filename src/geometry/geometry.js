@@ -1,5 +1,4 @@
 var EPS = 1E-9;
-var EPS2 = 0.04;
 /**
  * @param a vector
  * @param b vector
@@ -190,7 +189,12 @@ function comparePoints(a, b) {
         return 1;
     } else if (x1 < x2 || (x1 === x2 && y1 < y2)) {
         return -1;
-    } else if (Math.abs(x1 - x2) < EPS2 && Math.abs(y1 - y2) < EPS2 ) {
+    } else if (Math.abs(x1 - x2) < EPS && Math.abs(y1 - y2) < EPS ) {
+        console.log('x1');
+        console.log(Math.abs(x1));
+        console.log('x2');
+        console.log(Math.abs(x2));
+        // console.log(Math.abs(y1 - y2));
         return 0;
     }
 }
