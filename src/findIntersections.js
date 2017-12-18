@@ -6,13 +6,13 @@ var Tree = require('avl'),
 /**
 * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
 */
-function findIntersections(segments, map) {
+function findIntersections(segments) {
     var sweepline = new Sweepline('before'),
         queue = new Tree(utils.comparePoints, true),
         status = new Tree(utils.compareSegments.bind(sweepline), true),
         output = new Tree(utils.comparePoints, true);
 
-    segments.forEach(function (segment, i, a) {
+    segments.forEach(function (segment) {
         segment.sort(utils.comparePoints);
         var begin = new Point(segment[0], 'begin'),
             end = new Point(segment[1], 'end');
@@ -22,12 +22,11 @@ function findIntersections(segments, map) {
         begin.segments.push(segment);
 
         queue.insert(end, end);
-
     });
 
     while (!queue.isEmpty()) {
         var point = queue.pop();
-        handleEventPoint(point.key, status, output, queue, sweepline, map);
+        handleEventPoint(point.key, status, output, queue, sweepline);
     }
 
     return output.keys().map(function(key){
@@ -35,7 +34,7 @@ function findIntersections(segments, map) {
     });
 }
 
-function handleEventPoint(point, status, output, queue, sweepline, map) {
+function handleEventPoint(point, status, output, queue, sweepline) {
     sweepline.setPosition('before');
     sweepline.setX(point.x);
 
@@ -69,10 +68,6 @@ function handleEventPoint(point, status, output, queue, sweepline, map) {
 
     for (var j = 0; j < Cp.length; j++) {
         status.remove(Cp[j]);
-    }
-
-    for (var k = 0; k < Lp.length; k++) {
-        // status.remove(Lp[k]);
     }
 
     sweepline.setPosition('after');
@@ -118,8 +113,8 @@ function handleEventPoint(point, status, output, queue, sweepline, map) {
             findNewEvent(srr.key, UCpmax, point, output, queue);
         }
 
-        for (var j = 0; j < Lp.length; j++) {
-            status.remove(Lp[j]);
+        for (var p = 0; p < Lp.length; p++) {
+            status.remove(Lp[p]);
         }
     }
     return output;
