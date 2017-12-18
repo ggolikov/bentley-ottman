@@ -1,4 +1,4 @@
-# Bentley-Ottman sweeepline
+# Bentley-Ottman sweepline
 
 This is Bentley-Ottman sweepline algorithm implementation, both for Node.js and browser. Finds all intersection in a set of 2D segments, uses balanced avl tree internally.
 
