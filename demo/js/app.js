@@ -21,8 +21,7 @@ var bounds = map.getBounds(),
     qHeight = height / 4,
     qWidth = width / 4,
     random = false,
-    pointsCount = 10,
-    lines = [];
+    pointsCount = 10;
 
 if (random) {
     data = [];
@@ -37,17 +36,18 @@ if (random) {
     for (var i = 0; i < coords.length; i+=2) {
         data.push([coords[i], coords[i+1]]);
     }
-    // console.log(JSON.stringify(data));
 }
 
 
 drawLines(data);
 // console.log(pointsCount / 2);
 console.time('counting...');
+var ps = [];
 var ps = findIntersections(data, map);
 console.timeEnd('counting...');
 console.log(ps);
 console.log(ps.length);
+window.data = data;
 
 ps.forEach(function (p) {
     L.circleMarker(L.latLng(p.slice().reverse()), {radius: 5, color: 'blue', fillColor: 'blue'}).bindPopup(p[0] + '\n ' + p[1]).addTo(map);

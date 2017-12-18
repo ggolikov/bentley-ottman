@@ -185,16 +185,11 @@ function comparePoints(a, b) {
         x2 = bIsArray ? b[0] : b.x,
         y2 = bIsArray ? b[1] : b.y;
 
-    if (x1 > x2 || (x1 === x2 && y1 > y2)) {
+    if (x1 - x2 > EPS || (Math.abs(x1 - x2) < EPS && y1 - y2 > EPS)) {
         return 1;
-    } else if (x1 < x2 || (x1 === x2 && y1 < y2)) {
+    } else if (x2 - x1 > EPS || (Math.abs(x1 - x2) < EPS && y2 - y1 > EPS)) {
         return -1;
     } else if (Math.abs(x1 - x2) < EPS && Math.abs(y1 - y2) < EPS ) {
-        console.log('x1');
-        console.log(Math.abs(x1));
-        console.log('x2');
-        console.log(Math.abs(x2));
-        // console.log(Math.abs(y1 - y2));
         return 0;
     }
 }
