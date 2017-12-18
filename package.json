@@ -1,6 +1,6 @@
 {
   "name": "bentley-ottman-sweepline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bentley-Ottman segments intersection algorithm",
   "repository": "https://github.com/ggolikov/Geomblank",
   "main": "index.js",
