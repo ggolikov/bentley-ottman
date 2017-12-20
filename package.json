@@ -2,7 +2,7 @@
   "name": "bentley-ottman-sweepline",
   "version": "0.1.1",
   "description": "Bentley-Ottman segments intersection algorithm",
-  "repository": "https://github.com/ggolikov/Geomblank",
+  "repository": "https://github.com/ggolikov/bentley-ottman",
   "main": "index.js",
   "author": "Grigory Golikov gr.golikov@gmail.com",
   "license": "MIT",
