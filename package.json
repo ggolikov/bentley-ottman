@@ -1,6 +1,6 @@
 {
   "name": "bentley-ottman-sweepline",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Bentley-Ottman segments intersection algorithm",
   "repository": "https://github.com/ggolikov/bentley-ottman",
   "main": "index.js",
