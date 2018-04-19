@@ -1,3 +1,4 @@
 /node_modules
+/demo/js/bundle.js
 .log
 .eslintrc.js
