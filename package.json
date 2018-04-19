@@ -33,7 +33,6 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "avl": "^1.4.0",
-    "functional-red-black-tree": "^1.0.1"
+    "avl": "^1.4.0"
   }
 }
