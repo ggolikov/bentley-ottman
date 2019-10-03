@@ -7,10 +7,20 @@ var Tree = require('avl'),
 * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
 */
 function findIntersections(segments) {
-    var sweepline = new Sweepline('before'),
-        queue = new Tree(utils.comparePoints, true),
-        status = new Tree(utils.compareSegments.bind(sweepline), true),
-        output = new Tree(utils.comparePoints, true);
+	var sweepline = new Sweepline('before');
+	try{
+	    var queue = new Tree(utils.comparePoints, true),
+	        status = new Tree(utils.compareSegments.bind(sweepline), true),
+	        output = new Tree(utils.comparePoints, true);
+	}
+	catch(uwu){
+		if (!(/is not a constructor/i.test(uwu.message))){
+			throw uwu
+		}
+		var queue = new Tree.default(utils.comparePoints, true),
+			status = new Tree.default(utils.compareSegments.bind(sweepline), true),
+			output = new Tree.default(utils.comparePoints, true);
+	}
 
     segments.forEach(function (segment) {
         segment.sort(utils.comparePoints);
