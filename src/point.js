@@ -1,5 +1,5 @@
-var Point = function (coords, type, segmentIndex) {
-	this.segmentIndex = segmentIndex;
+var Point = function (coords, type, segmentID) {
+	this.segmentID = segmentID;
     this.x = coords[0];
     this.y = coords[1];
     this.type = type;

@@ -22,13 +22,13 @@ function findIntersections(segments) {
 			output = new Tree.default(utils.comparePoints, true);
 	}
 
-	for(let segmentIndex in segments) {
-		let segment = segments[segmentIndex];
-		segment[0]["idx"]=segmentIndex;
-		segment[1]["idx"]=segmentIndex;
+	for(let segmentID in segments) {
+		let segment = segments[segmentID];
+		segment[0].ID = segmentID;
+		segment[1].ID = segmentID;
         segment.sort(utils.comparePoints);
-        let begin = new Point(segment[0], 'begin', segmentIndex),
-            end   = new Point(segment[1], 'end', segmentIndex);
+        let begin = new Point(segment[0], 'begin', segmentID),
+            end   = new Point(segment[1], 'end', segmentID);
 
         queue.insert(begin, begin);
         begin = queue.find(begin).key;
@@ -43,7 +43,7 @@ function findIntersections(segments) {
     }
 
     return output.keys().map(function(key){
-        return {x: key.x, y: key.y, segmentIndex: key.segmentIndex};
+        return {x: key.x, y: key.y, segmentID: key.segmentID};
     });
 }
 
@@ -138,7 +138,7 @@ function findNewEvent(sl, sr, point, output, queue) {
         intersectionPoint;
 
     if (intersectionCoords) {
-        intersectionPoint = new Point(intersectionCoords, 'intersection', [sl[0].idx, sr[0].idx]);
+        intersectionPoint = new Point(intersectionCoords, 'intersection', [sl[0].ID, sr[0].ID]);
 
         if (!output.contains(intersectionPoint)) {
             queue.insert(intersectionPoint, intersectionPoint);
