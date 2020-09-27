@@ -16,3 +16,13 @@ console.log(findIntersections(segments));
 // prints [[2, 1]]
 
 ```
+
+## Browser build
+
+In order to use the library in the browser, simply open a console in the root folder and execute
+
+```shell
+npx browserify src/findIntersections.js -t babelify -o findIntersectionsBundle.js -s findIntersections
+```
+
+You can now use `findIntersectionsBundle.js` in the browser, and you have access to `findIntersections()`. Change `-o findIntersectionsBundle.js` to a different filename if you want to change the name of the output file, and change `-s findIntersections` to some other name if you want to alias function `findIntersections()` for some reason.
