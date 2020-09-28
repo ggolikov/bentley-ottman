@@ -36,13 +36,13 @@ but you can also define your segments as
 
 ```javascript
 let segments = {
-	MySpecialPointA: [[0,0], [1,1]],
-	MySpecialPointB: [[1,0], [0,1]],
+	MySpecialSegmentA: [[0,0], [1,1]],
+	MySpecialSegmentB: [[1,0], [0,1]],
 };
 
 console.log(JSON.stringify(findIntersections(segments)));
 
-// [{"x":0.5,"y":0.5,"segmentID":["MySpecialPointA","MySpecialPointB"]}]
+// [{"x":0.5,"y":0.5,"segmentID":["MySpecialSegmentA","MySpecialSegmentB"]}]
 ```
 
 This is the only Bentley-Ottman implementation that offers this feature.
