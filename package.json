@@ -30,7 +30,7 @@
     "eslint": "^3.14.1",
     "gh-pages": "^1.0.0",
     "live-server": "^1.2.0",
-    "mocha": "^3.5.0",
+    "mocha": "^10.2.0",
     "npm-run-all": "^4.0.1",
     "watchify": "^3.7.0"
   },
